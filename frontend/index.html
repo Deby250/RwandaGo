@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RwandaGo - Premium Car Rental & Touring in Rwanda</title>
+    <!-- Backend Bridge - MUST be loaded before other scripts -->
+    <script src="assets/js/bridge.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
-    <!-- Backend Bridge - MUST be loaded before other scripts -->
-<script src="assets/js/bridge.js"></script>
     <style>
         .navbar {
             position: fixed;
@@ -209,6 +209,75 @@
     <script src="assets/js/core/config.js"></script>
     <script src="assets/js/core/session.js"></script>
     <script>
+        const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// TRY THESE DIFFERENT PATHS - uncomment the one that works
+const FRONTEND_PATH = 'C:\\Users\\UMWALI DEBORAH\\Desktop\\RwandaGo';
+// const FRONTEND_PATH = 'C:\\Users\\UMWALI DEBORAH\\Desktop';
+// const FRONTEND_PATH = __dirname;
+
+// List files to help debug
+console.log('📁 Current directory:', __dirname);
+console.log('📁 Checking for index.html at:', path.join(FRONTEND_PATH, 'index.html'));
+
+// Check if file exists
+if (fs.existsSync(path.join(FRONTEND_PATH, 'index.html'))) {
+    console.log('✅ Found index.html');
+} else {
+    console.log('❌ index.html NOT found');
+    
+    // List files in directory
+    try {
+        const files = fs.readdirSync(FRONTEND_PATH);
+        console.log('📁 Files in directory:', files.slice(0, 10));
+    } catch(e) {
+        console.log('Cannot read directory');
+    }
+}
+
+// Serve static files
+app.use(express.static(FRONTEND_PATH));
+
+// Simple mock API
+app.get('/api/vehicles', (req, res) => {
+    res.json({ vehicles: [
+        { id: 1, name: 'Toyota RAV4', price: 55 },
+        { id: 2, name: 'Suzuki Jimny', price: 45 }
+    ]});
+});
+
+app.post('/api/auth/login', (req, res) => {
+    res.json({
+        success: true,
+        token: 'mock-token',
+        user: { id: 1, name: 'John Doe', role: 'tourist' },
+        role: 'tourist'
+    });
+});
+
+// Simple catch-all
+app.get('*', (req, res) => {
+    const indexPath = path.join(FRONTEND_PATH, 'index.html');
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.send(`
+            <h1>RwandaGo - Manual Start</h1>
+            <p>Please open your index.html file directly.</p>
+            <p>File should be at: ${indexPath}</p>
+        `);
+    }
+});
+
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server on http://localhost:${PORT}`));
         const vehicles = [
             { name: 'Toyota RAV4', seats: 5, bags: 3, price: 55, image: '🚙' },
             { name: 'Suzuki Jimny', seats: 4, bags: 2, price: 45, image: '🚘' },

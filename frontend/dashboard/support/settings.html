@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Settings | Support Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/dashboard.css">
+    <style>
+        /* Settings Page Styles */
+        .settings-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .settings-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .settings-section h2 i {
+            color: #e67e22;
+            margin-right: 0.5rem;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info h4 {
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .setting-info p {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #e67e22;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Profile Avatar */
+        .profile-avatar {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-avatar img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e67e22;
+        }
+        
+        .avatar-upload {
+            margin-top: 0.5rem;
+        }
+        
+        .avatar-upload button {
+            background: none;
+            border: none;
+            color: #e67e22;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        /* Form Styles */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .btn-save {
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-save:hover {
+            background: #cf711f;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        @media (max-width: 480px) {
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-car"></i>
+                <h3>RwandaGo</h3>
+                <p>Support Portal</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="tickets.html"><i class="fas fa-ticket-alt"></i> Tickets</a>
+                <a href="chat.html"><i class="fas fa-comments"></i> Live Chat</a>
+                <a href="emergency.html"><i class="fas fa-ambulance"></i> Emergency</a>
+                <a href="customers.html"><i class="fas fa-users"></i> Customers</a>
+                <a href="reports.html"><i class="fas fa-chart-line"></i> Reports</a>
+                <a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Settings</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Support</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="settings-section">
+                <h2><i class="fas fa-user"></i> Profile Settings</h2>
+                
+                <div class="profile-avatar">
+                    <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Profile" id="profileAvatar">
+                    <div class="avatar-upload">
+                        <button type="button" id="changePhotoBtn"><i class="fas fa-camera"></i> Change Photo</button>
+                    </div>
+                </div>
+                
+                <form id="profileForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> First Name</label>
+                            <input type="text" id="firstName" value="Support" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Last Name</label>
+                            <input type="text" id="lastName" value="Agent" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="email" value="support@rwandago.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" id="phone" value="+250788123458" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Change Password -->
+            <div class="settings-section">
+                <h2><i class="fas fa-key"></i> Change Password</h2>
+                <form id="passwordForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Current Password</label>
+                        <input type="password" id="currentPassword" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> New Password</label>
+                            <input type="password" id="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-check-circle"></i> Confirm New Password</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">Update Password</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="settings-section">
+                <h2><i class="fas fa-bell"></i> Notification Settings</h2>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Email Notifications</h4>
+                        <p>Receive email alerts for new tickets and replies</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="emailNotifications" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Push Notifications</h4>
+                        <p>Receive browser notifications for urgent tickets</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="pushNotifications" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>SMS Notifications</h4>
+                        <p>Receive SMS for high priority tickets</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="smsNotifications">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Ticket Settings -->
+            <div class="settings-section">
+                <h2><i class="fas fa-ticket-alt"></i> Ticket Settings</h2>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Auto-assign Tickets</h4>
+                        <p>Automatically assign new tickets to available agents</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoAssign" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Auto-close Resolved Tickets</h4>
+                        <p>Automatically close tickets after 7 days of resolution</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="autoClose" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label><i class="fas fa-clock"></i> Response Time Limit (minutes)</label>
+                    <input type="number" id="responseTimeLimit" value="60" class="w-100">
+                </div>
+            </div>
+
+            <!-- Preference Settings -->
+            <div class="settings-section">
+                <h2><i class="fas fa-globe"></i> Preferences</h2>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-language"></i> Language</label>
+                    <select id="language" class="w-100">
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                        <option value="rw">Kinyarwanda</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-palette"></i> Theme</label>
+                    <select id="theme" class="w-100">
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="auto">Auto (System Preference)</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="savePreferencesBtn" class="btn-save">Save Preferences</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../../assets/js/core/session.js"></script>
+    <script>
+        // Check authentication
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'support') {
+            window.location.href = '../../../login.html';
+        }
+        document.getElementById('userName').textContent = user.name || 'Support';
+
+        // Load saved settings from localStorage
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('supportSettings') || '{}');
+            
+            if (settings.emailNotifications !== undefined) {
+                document.getElementById('emailNotifications').checked = settings.emailNotifications;
+            }
+            if (settings.pushNotifications !== undefined) {
+                document.getElementById('pushNotifications').checked = settings.pushNotifications;
+            }
+            if (settings.smsNotifications !== undefined) {
+                document.getElementById('smsNotifications').checked = settings.smsNotifications;
+            }
+            if (settings.autoAssign !== undefined) {
+                document.getElementById('autoAssign').checked = settings.autoAssign;
+            }
+            if (settings.autoClose !== undefined) {
+                document.getElementById('autoClose').checked = settings.autoClose;
+            }
+            if (settings.responseTimeLimit) {
+                document.getElementById('responseTimeLimit').value = settings.responseTimeLimit;
+            }
+            if (settings.language) {
+                document.getElementById('language').value = settings.language;
+            }
+            if (settings.theme) {
+                document.getElementById('theme').value = settings.theme;
+                applyTheme(settings.theme);
+            }
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else if (theme === 'light') {
+                document.body.classList.remove('dark-mode');
+            } else if (theme === 'auto') {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+            }
+        }
+
+        // Save settings
+        function saveSettings() {
+            const settings = {
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                pushNotifications: document.getElementById('pushNotifications').checked,
+                smsNotifications: document.getElementById('smsNotifications').checked,
+                autoAssign: document.getElementById('autoAssign').checked,
+                autoClose: document.getElementById('autoClose').checked,
+                responseTimeLimit: document.getElementById('responseTimeLimit').value,
+                language: document.getElementById('language').value,
+                theme: document.getElementById('theme').value
+            };
+            
+            localStorage.setItem('supportSettings', JSON.stringify(settings));
+            applyTheme(settings.theme);
+            showNotification('Settings saved successfully!', 'success');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${message}</span>`;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Profile form submission
+        document.getElementById('profileForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showNotification('Profile updated successfully!', 'success');
+        });
+
+        // Password form submission
+        document.getElementById('passwordForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('Passwords do not match!', 'error');
+                return;
+            }
+            if (newPassword.length < 6) {
+                showNotification('Password must be at least 6 characters!', 'error');
+                return;
+            }
+            
+            showNotification('Password changed successfully!', 'success');
+            e.target.reset();
+        });
+
+        // Save preferences
+        document.getElementById('savePreferencesBtn')?.addEventListener('click', saveSettings);
+        
+        // Change photo
+        document.getElementById('changePhotoBtn')?.addEventListener('click', () => {
+            showNotification('Photo upload feature coming soon!', 'info');
+        });
+
+        // Logout handlers
+        document.getElementById('logoutBtn')?.addEventListener('click', () => {
+            session.clearSession();
+            window.location.href = '../../../login.html';
+        });
+        
+        document.getElementById('dropdownLogout')?.addEventListener('click', () => {
+            session.clearSession();
+            window.location.href = '../../../login.html';
+        });
+
+        // User dropdown
+        document.getElementById('userDropdown')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelector('.dropdown-menu').classList.toggle('show');
+        });
+        
+        document.addEventListener('click', () => {
+            document.querySelector('.dropdown-menu')?.classList.remove('show');
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menuToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Load settings on page load
+        loadSettings();
+    </script>
+</body>
+</html>

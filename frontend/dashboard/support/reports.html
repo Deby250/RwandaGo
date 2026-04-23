@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reports | Support Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/dashboard.css">
+    <style>
+        /* Reports Page Specific Styles */
+        .date-range {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+        }
+        
+        .date-range .form-group {
+            margin-bottom: 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0a3b2f;
+        }
+        
+        .stat-card .trend {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .trend-up { color: #27ae60; }
+        .trend-down { color: #e74c3c; }
+        
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .chart-header h3 {
+            font-size: 1.2rem;
+            color: #1a1a2e;
+        }
+        
+        .chart-wrapper {
+            height: 300px;
+            position: relative;
+        }
+        
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .report-table th,
+        .report-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .report-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        
+        .report-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .export-excel {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .export-csv {
+            background: #3498db;
+            color: white;
+        }
+        
+        .export-pdf {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .date-range {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .date-range .form-group {
+                margin-bottom: 1rem;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+            }
+            
+            .export-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-car"></i>
+                <h3>RwandaGo</h3>
+                <p>Support Portal</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="tickets.html"><i class="fas fa-ticket-alt"></i> Tickets</a>
+                <a href="chat.html"><i class="fas fa-comments"></i> Live Chat</a>
+                <a href="emergency.html"><i class="fas fa-ambulance"></i> Emergency</a>
+                <a href="customers.html"><i class="fas fa-users"></i> Customers</a>
+                <a href="reports.html" class="active"><i class="fas fa-chart-line"></i> Reports</a>
+                <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Support Reports & Analytics</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Support</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date Range Picker -->
+            <div class="date-range">
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-alt"></i> Start Date</label>
+                    <input type="date" id="startDate" value="2024-11-01">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calendar-check"></i> End Date</label>
+                    <input type="date" id="endDate" value="2024-12-31">
+                </div>
+                <button class="btn-primary-sm" id="applyDateRange">
+                    <i class="fas fa-sync-alt"></i> Apply Range
+                </button>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3><i class="fas fa-ticket-alt"></i> Total Tickets</h3>
+                    <div class="value" id="totalTickets">0</div>
+                    <div class="trend" id="ticketTrend"><i class="fas fa-chart-line"></i> Loading...</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-clock"></i> Avg Response Time</h3>
+                    <div class="value" id="avgResponseTime">0 min</div>
+                    <div class="trend" id="responseTrend"><i class="fas fa-chart-line"></i> Loading...</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-check-circle"></i> Resolution Rate</h3>
+                    <div class="value" id="resolutionRate">0%</div>
+                    <div class="trend" id="resolutionTrend"><i class="fas fa-chart-line"></i> Loading...</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-star"></i> Customer Satisfaction</h3>
+                    <div class="value" id="csat">0/5</div>
+                    <div class="trend" id="csatTrend"><i class="fas fa-chart-line"></i> Loading...</div>
+                </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="export-buttons">
+                <button class="export-btn export-excel" id="exportExcel">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+                <button class="export-btn export-csv" id="exportCSV">
+                    <i class="fas fa-file-csv"></i> Export to CSV
+                </button>
+                <button class="export-btn export-pdf" id="exportPDF">
+                    <i class="fas fa-file-pdf"></i> Export to PDF
+                </button>
+            </div>
+
+            <!-- Tickets by Status Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-pie"></i> Tickets by Status</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tickets Trend Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-line"></i> Ticket Trend</h3>
+                    <div class="chart-actions">
+                        <button class="chart-btn btn-sm btn-outline active" data-period="week">Week</button>
+                        <button class="chart-btn btn-sm btn-outline" data-period="month">Month</button>
+                        <button class="chart-btn btn-sm btn-outline" data-period="quarter">Quarter</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tickets by Category Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-bar"></i> Tickets by Category</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top Customers Table -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-trophy"></i> Top Customers (Most Tickets)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Customer</th>
+                                <th>Total Tickets</th>
+                                <th>Open Tickets</th>
+                                <th>Resolved</th>
+                             </tr>
+                        </thead>
+                        <tbody id="topCustomersBody">
+                            <tr><td colspan="5" class="text-center">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Agent Performance Table -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-users"></i> Agent Performance</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Agent</th>
+                                <th>Tickets Assigned</th>
+                                <th>Tickets Resolved</th>
+                                <th>Resolution Rate</th>
+                                <th>Avg Response Time</th>
+                             </tr>
+                        </thead>
+                        <tbody id="agentPerformanceBody">
+                            <tr><td colspan="5" class="text-center">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../../assets/js/core/session.js"></script>
+    <script>
+        let statusChart = null;
+        let trendChart = null;
+        let categoryChart = null;
+        let currentPeriod = 'month';
+
+        // Mock data
+        const mockData = {
+            status: {
+                labels: ['Open', 'In Progress', 'Resolved', 'Closed'],
+                data: [12, 8, 45, 15]
+            },
+            trends: {
+                week: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    data: [8, 12, 15, 10, 18, 6, 4]
+                },
+                month: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    data: [45, 52, 48, 68]
+                },
+                quarter: {
+                    labels: ['Oct', 'Nov', 'Dec'],
+                    data: [156, 189, 210]
+                }
+            },
+            categories: {
+                labels: ['Booking', 'Payment', 'Vehicle', 'Tour', 'Account', 'Technical', 'Other'],
+                data: [45, 28, 32, 15, 20, 12, 8]
+            },
+            topCustomers: [
+                { rank: 1, name: 'John Doe', total: 5, open: 1, resolved: 4 },
+                { rank: 2, name: 'Sarah Chen', total: 4, open: 0, resolved: 4 },
+                { rank: 3, name: 'Maria Garcia', total: 3, open: 1, resolved: 2 },
+                { rank: 4, name: 'David Kim', total: 3, open: 0, resolved: 3 },
+                { rank: 5, name: 'Lisa Wong', total: 2, open: 1, resolved: 1 }
+            ],
+            agentPerformance: [
+                { name: 'Agent A', assigned: 45, resolved: 42, rate: 93, avgResponse: 15 },
+                { name: 'Agent B', assigned: 38, resolved: 35, rate: 92, avgResponse: 18 },
+                { name: 'Agent C', assigned: 32, resolved: 28, rate: 88, avgResponse: 22 }
+            ]
+        };
+
+        const stats = {
+            totalTickets: 85,
+            avgResponseTime: 18,
+            resolutionRate: 89,
+            csat: 4.6,
+            previousTotal: 72,
+            previousAvgResponse: 22,
+            previousResolution: 85,
+            previousCsat: 4.4
+        };
+
+        // Check authentication
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'support') {
+            window.location.href = '../../../login.html';
+        }
+        document.getElementById('userName').textContent = user.name || 'Support';
+
+        // Initialize Charts
+        function initStatusChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            if (statusChart) statusChart.destroy();
+            
+            statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: mockData.status.labels,
+                    datasets: [{
+                        data: mockData.status.data,
+                        backgroundColor: ['#dc3545', '#f39c12', '#27ae60', '#6c757d'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function initTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            if (trendChart) trendChart.destroy();
+            
+            const data = mockData.trends[currentPeriod];
+            
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Tickets',
+                        data: data.data,
+                        borderColor: '#e67e22',
+                        backgroundColor: 'rgba(230, 126, 34, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#e67e22',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    }
+                }
+            });
+        }
+
+        function initCategoryChart() {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            if (categoryChart) categoryChart.destroy();
+            
+            categoryChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: mockData.categories.labels,
+                    datasets: [{
+                        label: 'Number of Tickets',
+                        data: mockData.categories.data,
+                        backgroundColor: '#e67e22',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    }
+                }
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('totalTickets').textContent = stats.totalTickets;
+            document.getElementById('avgResponseTime').textContent = `${stats.avgResponseTime} min`;
+            document.getElementById('resolutionRate').textContent = `${stats.resolutionRate}%`;
+            document.getElementById('csat').textContent = `${stats.csat}/5`;
+            
+            const ticketChange = ((stats.totalTickets - stats.previousTotal) / stats.previousTotal * 100).toFixed(1);
+            const responseChange = ((stats.previousAvgResponse - stats.avgResponseTime) / stats.previousAvgResponse * 100).toFixed(1);
+            const resolutionChange = (stats.resolutionRate - stats.previousResolution).toFixed(1);
+            const csatChange = (stats.csat - stats.previousCsat).toFixed(1);
+            
+            document.getElementById('ticketTrend').innerHTML = `<i class="fas fa-arrow-${ticketChange >= 0 ? 'up' : 'down'}"></i> ${Math.abs(ticketChange)}% vs previous period`;
+            document.getElementById('ticketTrend').className = `trend ${ticketChange >= 0 ? 'trend-up' : 'trend-down'}`;
+            
+            document.getElementById('responseTrend').innerHTML = `<i class="fas fa-arrow-${responseChange >= 0 ? 'down' : 'up'}"></i> ${Math.abs(responseChange)}% improvement`;
+            document.getElementById('responseTrend').className = `trend ${responseChange >= 0 ? 'trend-up' : 'trend-down'}`;
+            
+            document.getElementById('resolutionTrend').innerHTML = `<i class="fas fa-arrow-${resolutionChange >= 0 ? 'up' : 'down'}"></i> ${Math.abs(resolutionChange)}% vs previous period`;
+            document.getElementById('resolutionTrend').className = `trend ${resolutionChange >= 0 ? 'trend-up' : 'trend-down'}`;
+            
+            document.getElementById('csatTrend').innerHTML = `<i class="fas fa-arrow-${csatChange >= 0 ? 'up' : 'down'}"></i> ${Math.abs(csatChange)} points`;
+            document.getElementById('csatTrend').className = `trend ${csatChange >= 0 ? 'trend-up' : 'trend-down'}`;
+        }
+
+        function displayTopCustomers() {
+            const tbody = document.getElementById('topCustomersBody');
+            tbody.innerHTML = mockData.topCustomers.map(c => `
+                <tr>
+                    <td>${c.rank}</td>
+                    <td>${c.name}</td>
+                    <td>${c.total}</td>
+                    <td>${c.open}</td>
+                    <td>${c.resolved}</td>
+                </tr>
+            `).join('');
+        }
+
+        function displayAgentPerformance() {
+            const tbody = document.getElementById('agentPerformanceBody');
+            tbody.innerHTML = mockData.agentPerformance.map(a => `
+                <tr>
+                    <td>${a.name}</td>
+                    <td>${a.assigned}</td>
+                    <td>${a.resolved}</td>
+                    <td>${a.rate}%</td>
+                    <td>${a.avgResponse} min</td>
+                </tr>
+            `).join('');
+        }
+
+        function changePeriod(period) {
+            currentPeriod = period;
+            document.querySelectorAll('.chart-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(period)) {
+                    btn.classList.add('active');
+                }
+            });
+            initTrendChart();
+        }
+
+        function exportToExcel() {
+            alert('Excel export feature coming soon!');
+        }
+
+        function exportToCSV() {
+            alert('CSV export feature coming soon!');
+        }
+
+        function exportToPDF() {
+            alert('PDF export feature coming soon!');
+        }
+
+        function applyDateRange() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            alert(`Filtering reports from ${startDate} to ${endDate}`);
+        }
+
+        // Event Listeners
+        document.getElementById('applyDateRange')?.addEventListener('click', applyDateRange);
+        document.getElementById('exportExcel')?.addEventListener('click', exportToExcel);
+        document.getElementById('exportCSV')?.addEventListener('click', exportToCSV);
+        document.getElementById('exportPDF')?.addEventListener('click', exportToPDF);
+        
+        document.querySelectorAll('.chart-btn').forEach(btn => {
+            btn.addEventListener('click', () => changePeriod(btn.textContent.toLowerCase()));
+        });
+
+        document.getElementById('logoutBtn')?.addEventListener('click', () => {
+            session.clearSession();
+            window.location.href = '../../../login.html';
+        });
+        
+        document.getElementById('dropdownLogout')?.addEventListener('click', () => {
+            session.clearSession();
+            window.location.href = '../../../login.html';
+        });
+
+        document.getElementById('userDropdown')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelector('.dropdown-menu').classList.toggle('show');
+        });
+        
+        document.addEventListener('click', () => {
+            document.querySelector('.dropdown-menu')?.classList.remove('show');
+        });
+
+        document.getElementById('menuToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Initialize
+        updateStats();
+        initStatusChart();
+        initTrendChart();
+        initCategoryChart();
+        displayTopCustomers();
+        displayAgentPerformance();
+    </script>
+</body>
+</html>

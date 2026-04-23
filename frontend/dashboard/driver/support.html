@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Support | Driver Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../assets/css/main.css">
+    <link rel="stylesheet" href="../../../assets/css/dashboard.css">
+    <style>
+        /* Support Page Specific Styles */
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        /* Emergency Contacts */
+        .emergency-card {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .emergency-card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .emergency-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .emergency-card .phone-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+        
+        .emergency-card a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Contact Items */
+        .contact-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: transform 0.3s;
+        }
+        
+        .contact-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .contact-item i {
+            font-size: 1.8rem;
+            color: #e67e22;
+            width: 45px;
+        }
+        
+        .contact-item h4 {
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .contact-item p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+        
+        .contact-item a {
+            color: #e67e22;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        /* FAQ Styles */
+        .faq-item {
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .faq-question {
+            padding: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        
+        .faq-question:hover {
+            background: #f8f9fa;
+        }
+        
+        .faq-question i {
+            transition: transform 0.3s;
+            color: #e67e22;
+        }
+        
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0 1rem 1rem;
+            display: none;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        .faq-answer.show {
+            display: block;
+        }
+        
+        /* Ticket Form */
+        .ticket-form {
+            margin-top: 1rem;
+        }
+        
+        .priority-select {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .priority-option {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .priority-option:hover {
+            border-color: #e67e22;
+        }
+        
+        .priority-option.selected {
+            background: #e67e22;
+            border-color: #e67e22;
+            color: white;
+        }
+        
+        .priority-option.low.selected { background: #27ae60; border-color: #27ae60; }
+        .priority-option.medium.selected { background: #f39c12; border-color: #f39c12; }
+        .priority-option.high.selected { background: #dc3545; border-color: #dc3545; }
+        
+        /* Ticket List */
+        .ticket-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .ticket-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .ticket-number {
+            font-weight: bold;
+            color: #e67e22;
+        }
+        
+        .ticket-status {
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .status-open { background: #dc3545; color: white; }
+        .status-in-progress { background: #f39c12; color: white; }
+        .status-resolved { background: #27ae60; color: white; }
+        .status-closed { background: #6c757d; color: white; }
+        
+        .ticket-subject {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .ticket-date {
+            font-size: 0.7rem;
+            color: #999;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+        }
+        
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #999;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .message-history {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .message-item {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+        }
+        
+        .message-customer {
+            background: #e3f2fd;
+            margin-left: 20px;
+        }
+        
+        .message-staff {
+            background: #fff3e0;
+            margin-right: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        @media (max-width: 768px) {
+            .support-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .priority-select {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-car"></i>
+                <h3>RwandaGo</h3>
+                <p>Driver Portal</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a>
+                <a href="routes.html"><i class="fas fa-route"></i> Routes</a>
+                <a href="earnings.html"><i class="fas fa-money-bill"></i> Earnings</a>
+                <a href="vehicle.html"><i class="fas fa-car"></i> My Vehicle</a>
+                <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                <a href="support.html" class="active"><i class="fas fa-headset"></i> Support</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Support Center</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Driver</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="support-grid">
+                <!-- Emergency Contacts -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-ambulance"></i> Emergency Contacts</h2>
+                    </div>
+                    <div class="emergency-card">
+                        <i class="fas fa-car-crash"></i>
+                        <h3>Roadside Assistance</h3>
+                        <div class="phone-number">
+                            <a href="tel:+250788123456">+250 788 123 456</a>
+                        </div>
+                        <p style="margin-top: 0.5rem; opacity: 0.9;">24/7 Available</p>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h4>Police Emergency</h4>
+                            <p><a href="tel:112">112</a> (Toll-Free)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>WhatsApp Support</h4>
+                            <p><a href="https://wa.me/250788123456">+250 788 123 456</a></p>
+                            <p>Response within 5 minutes</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email Support</h4>
+                            <p><a href="mailto:support@rwandago.rw">support@rwandago.rw</a></p>
+                            <p>Response within 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Support Ticket -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-ticket-alt"></i> Submit Support Ticket</h2>
+                    </div>
+                    <form id="ticketForm" class="ticket-form">
+                        <div class="form-group">
+                            <label><i class="fas fa-tag"></i> Subject</label>
+                            <input type="text" id="ticketSubject" placeholder="Brief description of your issue" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-folder"></i> Category</label>
+                            <select id="ticketCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="vehicle">Vehicle Issue</option>
+                                <option value="route">Route/Navigation Problem</option>
+                                <option value="payment">Payment/Earnings Issue</option>
+                                <option value="customer">Customer Issue</option>
+                                <option value="account">Account Problem</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-flag"></i> Priority</label>
+                            <div class="priority-select">
+                                <div class="priority-option low" data-priority="low">
+                                    <i class="fas fa-arrow-down"></i> Low
+                                </div>
+                                <div class="priority-option medium" data-priority="medium">
+                                    <i class="fas fa-minus"></i> Medium
+                                </div>
+                                <div class="priority-option high" data-priority="high">
+                                    <i class="fas fa-exclamation"></i> High
+                                </div>
+                            </div>
+                            <input type="hidden" id="ticketPriority" value="medium">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-comment"></i> Message</label>
+                            <textarea id="ticketMessage" rows="4" placeholder="Please describe your issue in detail..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-paper-plane"></i> Submit Ticket
+                        </button>
+                    </form>
+                </div>
+
+                <!-- FAQ Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+                    </div>
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                How do I start my assigned trip?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                Go to "Assignments" page, find your trip, and click "Start Trip" button. Make sure to check the vehicle condition before starting.
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                What if I have an accident?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                Call our emergency hotline immediately at +250 788 123 456. Take photos of the scene and contact the customer support team.
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                How do I get paid?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                Your earnings are calculated per trip. Payments are processed weekly and deposited to your registered bank account or mobile money.
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                What if the customer is late?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                Wait for 15 minutes, then contact the customer via phone. If unreachable, contact support for further instructions.
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                How do I report vehicle issues?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                Submit a support ticket with "Vehicle Issue" category. Include photos if possible. Our team will assist you promptly.
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                Can I reject a trip assignment?
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                You can reject a trip but frequent rejections may affect your rating and future assignments. Contact support for valid reasons.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Tickets -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-list"></i> My Support Tickets</h2>
+                        <button class="btn-sm btn-outline" id="refreshTicketsBtn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="ticketsList" class="ticket-list">
+                        <div class="text-center" style="padding: 2rem;">Loading tickets...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Ticket Details Modal -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ticket Details</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body" id="ticketModalBody">
+                <!-- Content loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Close</button>
+                <button class="btn-primary" id="replyToTicketBtn">Reply</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../../assets/js/core/session.js"></script>
+    <script>
+        // Mock tickets data for driver
+        let tickets = [
+            {
+                id: 1,
+                ticketNumber: 'TKT001',
+                subject: 'Vehicle AC not working',
+                category: 'vehicle',
+                priority: 'high',
+                status: 'in-progress',
+                createdAt: '2024-11-28T10:30:00Z',
+                messages: [
+                    { sender: 'Driver', senderType: 'customer', message: 'The AC in my assigned vehicle is not working properly', time: '2024-11-28T10:30:00Z' },
+                    { sender: 'Support Team', senderType: 'staff', message: 'We have noted your issue. A technician will contact you.', time: '2024-11-28T11:00:00Z' }
+                ]
+            },
+            {
+                id: 2,
+                ticketNumber: 'TKT002',
+                subject: 'Route navigation issue',
+                category: 'route',
+                priority: 'medium',
+                status: 'resolved',
+                createdAt: '2024-11-25T14:15:00Z',
+                messages: [
+                    { sender: 'Driver', senderType: 'customer', message: 'GPS showing wrong directions for Volcanoes route', time: '2024-11-25T14:15:00Z' },
+                    { sender: 'Support Team', senderType: 'staff', message: 'We have updated the GPS routes. Please restart your app.', time: '2024-11-25T15:00:00Z' }
+                ]
+            },
+            {
+                id: 3,
+                ticketNumber: 'TKT003',
+                subject: 'Payment not showing',
+                category: 'payment',
+                priority: 'high',
+                status: 'open',
+                createdAt: '2024-11-29T09:00:00Z',
+                messages: [
+                    { sender: 'Driver', senderType: 'customer', message: 'My earnings for last week are not showing in my account', time: '2024-11-29T09:00:00Z' }
+                ]
+            }
+        ];
+
+        let currentTicketId = null;
+
+        // Check authentication
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'driver') {
+            window.location.href = '../../../login.html';
+        }
+        document.getElementById('userName').textContent = user.name || 'Driver';
+
+        // Load tickets
+        function loadTickets() {
+            const container = document.getElementById('ticketsList');
+            
+            if (tickets.length === 0) {
+                container.innerHTML = '<div class="text-center" style="padding: 2rem;">No tickets found</div>';
+                return;
+            }
+            
+            container.innerHTML = tickets.map(ticket => `
+                <div class="ticket-item" onclick="viewTicket(${ticket.id})">
+                    <div class="ticket-header">
+                        <span class="ticket-number">${ticket.ticketNumber}</span>
+                        <span class="ticket-status status-${ticket.status}">${ticket.status}</span>
+                    </div>
+                    <div class="ticket-subject">${ticket.subject}</div>
+                    <div class="ticket-date">Created: ${formatDate(ticket.createdAt)}</div>
+                </div>
+            `).join('');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function viewTicket(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            currentTicketId = ticketId;
+            const modalBody = document.getElementById('ticketModalBody');
+            
+            modalBody.innerHTML = `
+                <div>
+                    <p><strong>Ticket Number:</strong> ${ticket.ticketNumber}</p>
+                    <p><strong>Subject:</strong> ${ticket.subject}</p>
+                    <p><strong>Category:</strong> ${ticket.category}</p>
+                    <p><strong>Priority:</strong> ${ticket.priority}</p>
+                    <p><strong>Status:</strong> ${ticket.status}</p>
+                    <p><strong>Created:</strong> ${formatDate(ticket.createdAt)}</p>
+                    
+                    <div class="message-history">
+                        <h4>Message History</h4>
+                        ${ticket.messages.map(msg => `
+                            <div class="message-item ${msg.senderType === 'customer' ? 'message-customer' : 'message-staff'}">
+                                <div class="message-sender">
+                                    <strong>${msg.sender}</strong> ${msg.senderType === 'staff' ? '(Support)' : ''}
+                                </div>
+                                <div class="message-content">${msg.message}</div>
+                                <div class="message-time" style="font-size: 0.7rem; color: #999; margin-top: 0.25rem;">
+                                    ${formatDate(msg.time)}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Add Reply</label>
+                        <textarea id="replyMessage" rows="4" placeholder="Type your reply here..."></textarea>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('ticketModal').style.display = 'flex';
+        }
+
+        // Submit new ticket
+        document.getElementById('ticketForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const subject = document.getElementById('ticketSubject').value;
+            const category = document.getElementById('ticketCategory').value;
+            const priority = document.getElementById('ticketPriority').value;
+            const message = document.getElementById('ticketMessage').value;
+            
+            if (!subject || !category || !message) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            const newTicket = {
+                id: tickets.length + 1,
+                ticketNumber: `TKT00${tickets.length + 1}`,
+                subject: subject,
+                category: category,
+                priority: priority,
+                status: 'open',
+                createdAt: new Date().toISOString(),
+                messages: [
+                    { sender: user.name || 'Driver', senderType: 'customer', message: message, time: new Date().toISOString() }
+                ]
+            };
+            
+            tickets.unshift(newTicket);
+            loadTickets();
+            
+            // Reset form
+            e.target.reset();
+            document.getElementById('ticketPriority').value = 'medium';
+            document.querySelectorAll('.priority-option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelector('.priority-option.medium').classList.add('selected');
+            
+            alert('Ticket submitted successfully! We will respond within 24 hours.');
+        });
+
+        // Reply to ticket
+        document.getElementById('replyToTicketBtn')?.addEventListener('click', () => {
+            const message = document.getElementById('replyMessage')?.value;
+            if (!message || !message.trim()) {
+                alert('Please enter a reply message');
+                return;
+            }
+            
+            const ticket = tickets.find(t => t.id === currentTicketId);
+            if (ticket) {
+                ticket.messages.push({
+                    sender: user.name || 'Driver',
+                    senderType: 'customer',
+                    message: message,
+                    time: new Date().toISOString()
+                });
+                
+                loadTickets();
+                document.getElementById('ticketModal').style.display = 'none';
+                alert('Reply sent successfully');
+            }
+        });
+
+        // Priority selection
+        document.querySelectorAll('.priority-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.priority-option').forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                document.getElementById('ticketPriority').value = option.dataset.priority;
+            });
+        });
+
+        // Refresh tickets
+        document.getElementById('refreshTicketsBtn')?.addEventListener('click', () => {
+            loadTickets();
+            alert('Tickets refreshed');
+        });
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                question.classList.toggle('active');
+                const answer = question.nextElementSibling;
+                answer.classList.toggle('show');
+            });
+        });
+
+        // Modal close handlers
+        document.querySelectorAll('.modal-close').forEach(el => {
+            el.addEventListener('click', () => {
+                document.getElementById('ticketModal').style.display = 'none';
+            });
+        });
+
+        // Logout handlers
+        document.getElementById('logoutBtn')?.addEventListener('click', () => {
+            session.clearSession();
+            window.location.href = '../../../login.html';
+        });
+        
+        document.getElementById('dropdownLogout')?.addEventListener('click', () => {
+            session.clearSession();
+            window.location.href = '../../../login.html';
+        });
+
+        // User dropdown
+        document.getElementById('userDropdown')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelector('.dropdown-menu').classList.toggle('show');
+        });
+        
+        document.addEventListener('click', () => {
+            document.querySelector('.dropdown-menu')?.classList.remove('show');
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menuToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Initialize
+        loadTickets();
+    </script>
+</body>
+</html>

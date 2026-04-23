@@ -4,6 +4,7 @@
 
 require('express-async-errors');
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
@@ -39,7 +40,8 @@ app.use(helmet());
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, '..')));
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -85,6 +87,13 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/tours', tourRoutes);
 app.use('/api/support', supportRoutes);
+
+// Serve index.html for all non-API routes (SPA support)
+app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+        res.sendFile(path.join(__dirname, '..', 'index.html'));
+    }
+});
 
 // 404 Handler
 app.use((req, res) => {

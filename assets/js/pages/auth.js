@@ -25,6 +25,29 @@ class AuthPage {
         if (this.currentPage === 'signup') {
             this.setupAutoFillForDemo();
         }
+        
+        // Pre-fill email from signup redirect
+        if (this.currentPage === 'login') {
+            this.prefillEmailFromSignup();
+        }
+    }
+
+    prefillEmailFromSignup() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        if (email) {
+            const emailInput = document.getElementById('email');
+            if (emailInput) {
+                emailInput.value = email;
+                // Focus on password field
+                const passwordInput = document.getElementById('password');
+                if (passwordInput) {
+                    passwordInput.focus();
+                }
+            }
+            // Show info message
+            this.showInfo('Account created! Please enter your password to login.');
+        }
     }
 
     checkExistingSession() {
@@ -232,22 +255,11 @@ class AuthPage {
             existingUsers.push(newUser);
             localStorage.setItem('rwandago_users', JSON.stringify(existingUsers));
             
-            // AUTO-LOGIN: Save session immediately
-            sessionStorage.setItem('rwandago_user', JSON.stringify(newUser));
-            sessionStorage.setItem('rwandago_token', 'demo_token_' + Date.now());
-            sessionStorage.setItem('rwandago_role', newUser.role);
+            this.showSuccess('Account created successfully! Redirecting to login...');
             
-            this.showSuccess('Account created successfully! Redirecting to dashboard...');
-            
-            const roleRedirects = {
-                'tourist': '../dashboard/tourist/index.html',
-                'admin': '../dashboard/admin/index.html',
-                'support': '../dashboard/support/index.html',
-                'driver': '../dashboard/driver/index.html'
-            };
-            
+            // Redirect to login page with email pre-filled
             setTimeout(() => {
-                window.location.href = roleRedirects[newUser.role];
+                window.location.href = `login.html?email=${encodeURIComponent(email)}`;
             }, 1500);
         }, 1500);
     }

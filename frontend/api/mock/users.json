@@ -1,0 +1,133 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "tourist@rwandago.com",
+      "password": "password123",
+      "phone": "+250788123456",
+      "passportNumber": "A12345678",
+      "nationality": "United States",
+      "role": "tourist",
+      "isActive": true,
+      "isVerified": true,
+      "profileImage": "https://randomuser.me/api/portraits/men/1.jpg",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "lastLogin": "2024-12-01T09:00:00Z",
+      "preferences": {
+        "notifications": true,
+        "language": "en",
+        "currency": "USD"
+      }
+    },
+    {
+      "id": 2,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@rwandago.com",
+      "password": "password123",
+      "phone": "+250788123457",
+      "passportNumber": "ADMIN001",
+      "nationality": "Rwanda",
+      "role": "admin",
+      "isActive": true,
+      "isVerified": true,
+      "profileImage": "https://randomuser.me/api/portraits/men/2.jpg",
+      "createdAt": "2024-01-10T08:00:00Z",
+      "lastLogin": "2024-12-01T10:30:00Z",
+      "preferences": {
+        "notifications": true,
+        "language": "en",
+        "currency": "USD"
+      }
+    },
+    {
+      "id": 3,
+      "firstName": "Support",
+      "lastName": "Agent",
+      "email": "support@rwandago.com",
+      "password": "password123",
+      "phone": "+250788123458",
+      "passportNumber": "SUP001",
+      "nationality": "Rwanda",
+      "role": "support",
+      "isActive": true,
+      "isVerified": true,
+      "profileImage": "https://randomuser.me/api/portraits/women/1.jpg",
+      "createdAt": "2024-01-12T09:00:00Z",
+      "lastLogin": "2024-12-01T08:00:00Z",
+      "preferences": {
+        "notifications": true,
+        "language": "en",
+        "currency": "USD"
+      }
+    },
+    {
+      "id": 4,
+      "firstName": "Driver",
+      "lastName": "Guide",
+      "email": "driver@rwandago.com",
+      "password": "password123",
+      "phone": "+250788123459",
+      "passportNumber": "DRV001",
+      "nationality": "Rwanda",
+      "role": "driver",
+      "isActive": true,
+      "isVerified": true,
+      "profileImage": "https://randomuser.me/api/portraits/men/3.jpg",
+      "createdAt": "2024-01-14T11:00:00Z",
+      "lastLogin": "2024-12-01T07:30:00Z",
+      "preferences": {
+        "notifications": true,
+        "language": "en",
+        "currency": "USD"
+      }
+    },
+    {
+      "id": 5,
+      "firstName": "Sarah",
+      "lastName": "Chen",
+      "email": "sarah@example.com",
+      "password": "password123",
+      "phone": "+250788123460",
+      "passportNumber": "B98765432",
+      "nationality": "China",
+      "role": "tourist",
+      "isActive": true,
+      "isVerified": true,
+      "profileImage": "https://randomuser.me/api/portraits/women/2.jpg",
+      "createdAt": "2024-02-20T14:30:00Z",
+      "lastLogin": "2024-11-28T15:00:00Z",
+      "preferences": {
+        "notifications": true,
+        "language": "zh",
+        "currency": "CNY"
+      }
+    },
+    {
+      "id": 6,
+      "firstName": "Maria",
+      "lastName": "Garcia",
+      "email": "maria@example.com",
+      "password": "password123",
+      "phone": "+250788123461",
+      "passportNumber": "C45678901",
+      "nationality": "Spain",
+      "role": "tourist",
+      "isActive": true,
+      "isVerified": true,
+      "profileImage": "https://randomuser.me/api/portraits/women/3.jpg",
+      "createdAt": "2024-03-05T09:15:00Z",
+      "lastLogin": "2024-11-25T10:00:00Z",
+      "preferences": {
+        "notifications": true,
+        "language": "es",
+        "currency": "EUR"
+      }
+    }
+  ],
+  "total": 6,
+  "page": 1,
+  "limit": 10
+}

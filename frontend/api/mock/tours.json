@@ -1,0 +1,370 @@
+{
+  "tours": [
+    {
+      "id": 1,
+      "name": "Volcanoes National Park Adventure",
+      "slug": "volcanoes-national-park",
+      "description": "Experience the majestic mountain gorillas in their natural habitat. This once-in-a-lifetime adventure takes you through the misty mountains of Volcanoes National Park. Trek through the bamboo forest and spend an unforgettable hour with a family of mountain gorillas.",
+      "shortDescription": "Gorilla trekking adventure in the misty mountains",
+      "duration": {
+        "days": 2,
+        "nights": 1
+      },
+      "price": {
+        "adult": 500,
+        "child": 350,
+        "infant": 100
+      },
+      "groupSize": {
+        "min": 1,
+        "max": 8
+      },
+      "category": "adventure",
+      "difficulty": "moderate",
+      "highlights": [
+        "Gorilla trekking experience",
+        "Mountain views",
+        "Cultural experience with local communities",
+        "Professional guide"
+      ],
+      "inclusions": [
+        "Park entry fees ($150)",
+        "Professional English/French guide",
+        "Transportation from Kigali",
+        "Bottled water",
+        "Lunch on trekking day"
+      ],
+      "exclusions": [
+        "Tips for guides",
+        "Personal expenses",
+        "Travel insurance",
+        "Additional drinks"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Departure from Kigali",
+          "description": "Early morning departure from Kigali. Drive to Volcanoes National Park (2.5 hours). Stop at the park headquarters for briefing. Afternoon cultural village visit."
+        },
+        {
+          "day": 2,
+          "title": "Gorilla Trekking",
+          "description": "Early morning breakfast. Head to park headquarters for group assignment. Start gorilla trekking (1-4 hours depending on gorilla movement). Spend 1 hour with the gorillas. Return to lodge and drive back to Kigali."
+        }
+      ],
+      "startLocation": "Kigali",
+      "endLocation": "Volcanoes National Park",
+      "startTimes": ["06:00", "07:00"],
+      "images": [
+        {
+          "url": "https://example.com/images/volcanoes-1.jpg",
+          "caption": "Mountain gorilla"
+        },
+        {
+          "url": "https://example.com/images/volcanoes-2.jpg",
+          "caption": "Volcanoes National Park"
+        }
+      ],
+      "coverImage": {
+        "url": "https://example.com/images/volcanoes-cover.jpg",
+        "caption": "Gorilla trekking"
+      },
+      "isActive": true,
+      "featured": true,
+      "rating": 4.9,
+      "totalReviews": 156,
+      "tags": ["gorilla", "trekking", "wildlife", "adventure"],
+      "image": "🏔️"
+    },
+    {
+      "id": 2,
+      "name": "Nyungwe Forest Canopy Walk",
+      "slug": "nyungwe-forest-canopy",
+      "description": "Walk among the treetops in ancient rainforest. Experience the only canopy walk in East Africa. Suspended 50 meters above the forest floor, this 90-meter bridge offers breathtaking views of the lush rainforest and opportunities to spot monkeys and birds.",
+      "shortDescription": "Walk among the treetops in ancient rainforest",
+      "duration": {
+        "days": 2,
+        "nights": 1
+      },
+      "price": {
+        "adult": 350,
+        "child": 250,
+        "infant": 80
+      },
+      "groupSize": {
+        "min": 1,
+        "max": 10
+      },
+      "category": "nature",
+      "difficulty": "easy",
+      "highlights": [
+        "Canopy walk experience",
+        "Chimpanzee tracking",
+        "Waterfall visit",
+        "Bird watching"
+      ],
+      "inclusions": [
+        "Park entry fees",
+        "Canopy walk permit",
+        "Professional guide",
+        "Transportation from Kigali",
+        "Bottled water"
+      ],
+      "exclusions": [
+        "Tips",
+        "Personal expenses",
+        "Travel insurance"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Drive to Nyungwe",
+          "description": "Morning departure from Kigali. Drive to Nyungwe Forest (4 hours). Afternoon nature walk and waterfall visit."
+        },
+        {
+          "day": 2,
+          "title": "Canopy Walk & Chimpanzee Tracking",
+          "description": "Early morning chimpanzee tracking (optional). Then experience the canopy walk. Return to Kigali in the afternoon."
+        }
+      ],
+      "startLocation": "Kigali",
+      "endLocation": "Nyungwe Forest",
+      "startTimes": ["06:00"],
+      "images": [
+        {
+          "url": "https://example.com/images/nyungwe-1.jpg",
+          "caption": "Canopy walk"
+        }
+      ],
+      "coverImage": {
+        "url": "https://example.com/images/nyungwe-cover.jpg",
+        "caption": "Canopy walk experience"
+      },
+      "isActive": true,
+      "featured": true,
+      "rating": 4.8,
+      "totalReviews": 98,
+      "tags": ["canopy walk", "forest", "nature", "bird watching"],
+      "image": "🌳"
+    },
+    {
+      "id": 3,
+      "name": "Lake Kivu Escape",
+      "slug": "lake-kivu-escape",
+      "description": "Relaxing lakeside retreat with water activities. Perfect for unwinding after gorilla trekking. Enjoy boat cruises, kayaking, and beautiful sunsets on one of Africa's great lakes.",
+      "shortDescription": "Relaxing lakeside retreat with water activities",
+      "duration": {
+        "days": 3,
+        "nights": 2
+      },
+      "price": {
+        "adult": 450,
+        "child": 300,
+        "infant": 100
+      },
+      "groupSize": {
+        "min": 1,
+        "max": 12
+      },
+      "category": "relaxation",
+      "difficulty": "easy",
+      "highlights": [
+        "Boat cruise",
+        "Kayaking",
+        "Beach relaxation",
+        "Sunset viewing",
+        "Island visit"
+      ],
+      "inclusions": [
+        "Accommodation at lakeside resort",
+        "Meals (breakfast, lunch, dinner)",
+        "Boat tour",
+        "Kayaking equipment",
+        "Transportation from Kigali"
+      ],
+      "exclusions": [
+        "Tips",
+        "Personal expenses",
+        "Additional drinks",
+        "Travel insurance"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Drive to Lake Kivu",
+          "description": "Morning departure from Kigali. Drive to Lake Kivu (3 hours). Check-in at resort. Afternoon at leisure - swimming or beach walk."
+        },
+        {
+          "day": 2,
+          "title": "Boat Cruise & Activities",
+          "description": "Morning boat cruise to Napoleon Island. Visit the island and see fruit bats. Afternoon kayaking or swimming."
+        },
+        {
+          "day": 3,
+          "title": "Relaxation & Return",
+          "description": "Morning at leisure - enjoy the beach. Afternoon drive back to Kigali."
+        }
+      ],
+      "startLocation": "Kigali",
+      "endLocation": "Lake Kivu",
+      "startTimes": ["08:00"],
+      "images": [
+        {
+          "url": "https://example.com/images/kivu-1.jpg",
+          "caption": "Lake Kivu sunset"
+        }
+      ],
+      "coverImage": {
+        "url": "https://example.com/images/kivu-cover.jpg",
+        "caption": "Lake Kivu"
+      },
+      "isActive": true,
+      "featured": true,
+      "rating": 4.7,
+      "totalReviews": 89,
+      "tags": ["lake", "relaxation", "boat", "kayaking"],
+      "image": "💧"
+    },
+    {
+      "id": 4,
+      "name": "Akagera Safari",
+      "slug": "akagera-safari",
+      "description": "Big five wildlife experience in savannah. Spot elephants, lions, giraffes, zebras, and more. Enjoy game drives and boat safaris in Rwanda's only savannah park.",
+      "shortDescription": "Big five wildlife experience in savannah",
+      "duration": {
+        "days": 2,
+        "nights": 1
+      },
+      "price": {
+        "adult": 400,
+        "child": 280,
+        "infant": 90
+      },
+      "groupSize": {
+        "min": 1,
+        "max": 12
+      },
+      "category": "wildlife",
+      "difficulty": "easy",
+      "highlights": [
+        "Game drive",
+        "Boat safari",
+        "Bird watching",
+        "Wildlife photography"
+      ],
+      "inclusions": [
+        "Park entry fees",
+        "Game drive vehicle",
+        "Professional guide",
+        "Meals (breakfast, lunch, dinner)",
+        "Bottled water"
+      ],
+      "exclusions": [
+        "Tips",
+        "Personal expenses",
+        "Travel insurance"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Drive to Akagera & Game Drive",
+          "description": "Early morning departure from Kigali. Drive to Akagera National Park (2.5 hours). Check-in and afternoon game drive."
+        },
+        {
+          "day": 2,
+          "title": "Morning Game Drive & Boat Safari",
+          "description": "Early morning game drive. Afternoon boat safari on Lake Ihema. Return to Kigali in the evening."
+        }
+      ],
+      "startLocation": "Kigali",
+      "endLocation": "Akagera National Park",
+      "startTimes": ["05:30"],
+      "images": [
+        {
+          "url": "https://example.com/images/akagera-1.jpg",
+          "caption": "Elephants"
+        }
+      ],
+      "coverImage": {
+        "url": "https://example.com/images/akagera-cover.jpg",
+        "caption": "Akagera safari"
+      },
+      "isActive": true,
+      "featured": true,
+      "rating": 4.9,
+      "totalReviews": 124,
+      "tags": ["safari", "wildlife", "animals", "game drive"],
+      "image": "🦒"
+    },
+    {
+      "id": 5,
+      "name": "Kigali City Tour",
+      "slug": "kigali-city-tour",
+      "description": "Explore Rwanda's vibrant capital city. Visit the Kigali Genocide Memorial, local markets, art galleries, and enjoy panoramic views of the city.",
+      "shortDescription": "Explore Rwanda's vibrant capital city",
+      "duration": {
+        "days": 1,
+        "nights": 0
+      },
+      "price": {
+        "adult": 100,
+        "child": 70,
+        "infant": 0
+      },
+      "groupSize": {
+        "min": 1,
+        "max": 15
+      },
+      "category": "cultural",
+      "difficulty": "easy",
+      "highlights": [
+        "Kigali Genocide Memorial",
+        "Local markets",
+        "Art galleries",
+        "City viewpoints",
+        "Craft village"
+      ],
+      "inclusions": [
+        "Transportation",
+        "Professional guide",
+        "Bottled water",
+        "Entrance fees"
+      ],
+      "exclusions": [
+        "Lunch",
+        "Personal expenses",
+        "Tips"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Kigali City Exploration",
+          "description": "Start at Kigali Genocide Memorial. Visit local markets. Lunch break. Afternoon art galleries and craft village. End at viewpoint overlooking the city."
+        }
+      ],
+      "startLocation": "Kigali",
+      "endLocation": "Kigali",
+      "startTimes": ["09:00", "10:00", "14:00"],
+      "images": [
+        {
+          "url": "https://example.com/images/kigali-1.jpg",
+          "caption": "Kigali city"
+        }
+      ],
+      "coverImage": {
+        "url": "https://example.com/images/kigali-cover.jpg",
+        "caption": "Kigali city view"
+      },
+      "isActive": true,
+      "featured": false,
+      "rating": 4.6,
+      "totalReviews": 67,
+      "tags": ["city", "cultural", "history", "memorial"],
+      "image": "🏙️"
+    }
+  ],
+  "total": 5,
+  "page": 1,
+  "limit": 10,
+  "categories": ["adventure", "nature", "cultural", "wildlife", "relaxation"]
+}

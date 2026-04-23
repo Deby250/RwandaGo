@@ -1,0 +1,244 @@
+{
+  "bookings": [
+    {
+      "id": "BK001",
+      "bookingNumber": "BK202412001234",
+      "userId": 1,
+      "user": {
+        "id": 1,
+        "name": "John Doe",
+        "email": "tourist@rwandago.com",
+        "phone": "+250788123456"
+      },
+      "vehicleId": 1,
+      "vehicle": {
+        "id": 1,
+        "name": "Toyota RAV4",
+        "model": "RAV4",
+        "pricePerDay": 55,
+        "image": "🚙"
+      },
+      "startDate": "2024-12-01T10:00:00Z",
+      "endDate": "2024-12-05T10:00:00Z",
+      "pickupLocation": "Kigali Airport",
+      "returnLocation": "Kigali Airport",
+      "duration": {
+        "days": 4,
+        "hours": 0
+      },
+      "basePrice": 220,
+      "extras": [
+        {
+          "name": "GPS Navigation",
+          "price": 40,
+          "quantity": 1
+        },
+        {
+          "name": "Premium Insurance",
+          "price": 60,
+          "quantity": 1
+        }
+      ],
+      "extrasTotal": 100,
+      "totalAmount": 320,
+      "depositAmount": 64,
+      "remainingAmount": 256,
+      "depositPaid": true,
+      "status": "active",
+      "paymentStatus": "deposit_paid",
+      "specialRequests": "Baby seat requested",
+      "createdAt": "2024-11-20T14:30:00Z",
+      "updatedAt": "2024-11-20T14:30:00Z"
+    },
+    {
+      "id": "BK002",
+      "bookingNumber": "BK202411002345",
+      "userId": 5,
+      "user": {
+        "id": 5,
+        "name": "Sarah Chen",
+        "email": "sarah@example.com",
+        "phone": "+250788123460"
+      },
+      "vehicleId": 2,
+      "vehicle": {
+        "id": 2,
+        "name": "Suzuki Jimny",
+        "model": "Jimny",
+        "pricePerDay": 45,
+        "image": "🚘"
+      },
+      "startDate": "2024-11-15T09:00:00Z",
+      "endDate": "2024-11-18T09:00:00Z",
+      "pickupLocation": "Downtown Kigali",
+      "returnLocation": "Downtown Kigali",
+      "duration": {
+        "days": 3,
+        "hours": 0
+      },
+      "basePrice": 135,
+      "extras": [],
+      "extrasTotal": 0,
+      "totalAmount": 135,
+      "depositAmount": 27,
+      "remainingAmount": 108,
+      "depositPaid": true,
+      "status": "completed",
+      "paymentStatus": "fully_paid",
+      "specialRequests": "",
+      "createdAt": "2024-11-10T11:00:00Z",
+      "updatedAt": "2024-11-18T15:00:00Z",
+      "completedAt": "2024-11-18T15:00:00Z",
+      "rating": 5,
+      "review": "Great experience! The car was in perfect condition."
+    },
+    {
+      "id": "BK003",
+      "bookingNumber": "BK202410003456",
+      "userId": 6,
+      "user": {
+        "id": 6,
+        "name": "Maria Garcia",
+        "email": "maria@example.com",
+        "phone": "+250788123461"
+      },
+      "vehicleId": 3,
+      "vehicle": {
+        "id": 3,
+        "name": "Mitsubishi Pajero",
+        "model": "Pajero",
+        "pricePerDay": 85,
+        "image": "🚐"
+      },
+      "startDate": "2024-10-20T08:00:00Z",
+      "endDate": "2024-10-25T18:00:00Z",
+      "pickupLocation": "Kigali Airport",
+      "returnLocation": "Kigali Airport",
+      "duration": {
+        "days": 5,
+        "hours": 10
+      },
+      "basePrice": 425,
+      "extras": [
+        {
+          "name": "Professional Guide",
+          "price": 250,
+          "quantity": 1
+        }
+      ],
+      "extrasTotal": 250,
+      "totalAmount": 675,
+      "depositAmount": 135,
+      "remainingAmount": 540,
+      "depositPaid": true,
+      "status": "completed",
+      "paymentStatus": "fully_paid",
+      "specialRequests": "Need guide who speaks Spanish",
+      "createdAt": "2024-10-05T16:20:00Z",
+      "updatedAt": "2024-10-25T20:00:00Z",
+      "completedAt": "2024-10-25T20:00:00Z",
+      "rating": 5,
+      "review": "Amazing trip! The guide was very knowledgeable."
+    },
+    {
+      "id": "BK004",
+      "bookingNumber": "BK202412004567",
+      "userId": 1,
+      "user": {
+        "id": 1,
+        "name": "John Doe",
+        "email": "tourist@rwandago.com",
+        "phone": "+250788123456"
+      },
+      "vehicleId": 6,
+      "vehicle": {
+        "id": 6,
+        "name": "Mercedes C-Class",
+        "model": "C-Class",
+        "pricePerDay": 120,
+        "image": "🏎️"
+      },
+      "startDate": "2024-12-10T09:00:00Z",
+      "endDate": "2024-12-15T09:00:00Z",
+      "pickupLocation": "Hotel des Mille Collines",
+      "returnLocation": "Hotel des Mille Collines",
+      "duration": {
+        "days": 5,
+        "hours": 0
+      },
+      "basePrice": 600,
+      "extras": [
+        {
+          "name": "GPS Navigation",
+          "price": 50,
+          "quantity": 1
+        },
+        {
+          "name": "Premium Insurance",
+          "price": 75,
+          "quantity": 1
+        }
+      ],
+      "extrasTotal": 125,
+      "totalAmount": 725,
+      "depositAmount": 145,
+      "remainingAmount": 580,
+      "depositPaid": false,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "specialRequests": "",
+      "createdAt": "2024-11-25T10:45:00Z",
+      "updatedAt": "2024-11-25T10:45:00Z"
+    },
+    {
+      "id": "BK005",
+      "bookingNumber": "BK202411005678",
+      "userId": 5,
+      "user": {
+        "id": 5,
+        "name": "Sarah Chen",
+        "email": "sarah@example.com",
+        "phone": "+250788123460"
+      },
+      "vehicleId": 4,
+      "vehicle": {
+        "id": 4,
+        "name": "Hyundai i10",
+        "model": "i10",
+        "pricePerDay": 30,
+        "image": "🚗"
+      },
+      "startDate": "2024-11-25T10:00:00Z",
+      "endDate": "2024-11-27T10:00:00Z",
+      "pickupLocation": "Kigali Airport",
+      "returnLocation": "Kigali Airport",
+      "duration": {
+        "days": 2,
+        "hours": 0
+      },
+      "basePrice": 60,
+      "extras": [],
+      "extrasTotal": 0,
+      "totalAmount": 60,
+      "depositAmount": 12,
+      "remainingAmount": 48,
+      "depositPaid": true,
+      "status": "cancelled",
+      "paymentStatus": "refunded",
+      "specialRequests": "",
+      "cancellationReason": "Flight cancelled",
+      "cancelledAt": "2024-11-24T08:00:00Z",
+      "createdAt": "2024-11-20T09:30:00Z",
+      "updatedAt": "2024-11-24T08:00:00Z"
+    }
+  ],
+  "total": 5,
+  "page": 1,
+  "limit": 10,
+  "statusCounts": {
+    "active": 1,
+    "pending": 1,
+    "completed": 2,
+    "cancelled": 1
+  }
+}

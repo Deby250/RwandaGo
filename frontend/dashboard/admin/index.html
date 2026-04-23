@@ -10,6 +10,11 @@ else {
     else { window.location.href = 'overview.html'; }
 }
 </script>
+<!-- Backend Bridge - MUST be loaded before other scripts -->
+<script src="assets/js/bridge.js"></script>
+<!-- Add before bridge.js -->
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script src="assets/js/bridge.js"></script>
 </head>
 <body>Redirecting to dashboard...</body>
 </html>

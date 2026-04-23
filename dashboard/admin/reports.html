@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics | Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        /* Reports Page Specific Styles */
+        .date-range {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+        }
+        .date-range input {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0a3b2f;
+        }
+        .stat-card .trend {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        .trend-up { color: #27ae60; }
+        .trend-down { color: #e74c3c; }
+        
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .chart-header h3 {
+            font-size: 1.2rem;
+            color: #1a1a2e;
+        }
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .chart-btn {
+            padding: 6px 12px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .chart-btn.active {
+            background: #e67e22;
+            color: white;
+            border-color: #e67e22;
+        }
+        .chart-wrapper {
+            height: 300px;
+            position: relative;
+        }
+        
+        /* Table Styles */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .report-table th,
+        .report-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .report-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .report-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Export Buttons */
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .export-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .export-excel {
+            background: #27ae60;
+            color: white;
+        }
+        .export-pdf {
+            background: #e74c3c;
+            color: white;
+        }
+        .export-csv {
+            background: #3498db;
+            color: white;
+        }
+        
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: 16px;
+        }
+        .chart-container {
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .date-range {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .export-buttons {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-car"></i>
+                <h3>RwandaGo</h3>
+                <p>Admin Portal</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="vehicles.html"><i class="fas fa-car"></i> Vehicles</a>
+                <a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a>
+                <a href="customers.html"><i class="fas fa-users"></i> Customers</a>
+                <a href="reports.html" class="active"><i class="fas fa-chart-line"></i> Reports</a>
+                <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Reports & Analytics</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date Range Picker -->
+            <div class="date-range">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label><i class="fas fa-calendar-alt"></i> Start Date</label>
+                    <input type="date" id="startDate" value="2024-01-01">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label><i class="fas fa-calendar-check"></i> End Date</label>
+                    <input type="date" id="endDate" value="2024-12-31">
+                </div>
+                <button class="btn-primary-sm" id="applyDateRange" style="margin-top: 24px;">
+                    <i class="fas fa-sync-alt"></i> Apply Range
+                </button>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <h3><i class="fas fa-dollar-sign"></i> Total Revenue</h3>
+                    <div class="value" id="totalRevenue">$0</div>
+                    <div class="trend" id="revenueTrend"><i class="fas fa-chart-line"></i> Loading...</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-car"></i> Total Bookings</h3>
+                    <div class="value" id="totalBookings">0</div>
+                    <div class="trend" id="bookingTrend"><i class="fas fa-chart-line"></i> Loading...</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-users"></i> Active Customers</h3>
+                    <div class="value" id="activeCustomers">0</div>
+                    <div class="trend" id="customerTrend"><i class="fas fa-chart-line"></i> Loading...</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-check-circle"></i> Completion Rate</h3>
+                    <div class="value" id="completionRate">0%</div>
+                    <div class="trend" id="completionTrend"><i class="fas fa-chart-line"></i> Loading...</div>
+                </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="export-buttons">
+                <button class="export-btn export-excel" id="exportExcel">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+                <button class="export-btn export-csv" id="exportCSV">
+                    <i class="fas fa-file-csv"></i> Export to CSV
+                </button>
+                <button class="export-btn export-pdf" id="exportPDF">
+                    <i class="fas fa-file-pdf"></i> Export to PDF
+                </button>
+            </div>
+
+            <!-- Revenue Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-line"></i> Revenue Overview</h3>
+                    <div class="chart-actions">
+                        <button class="chart-btn" data-period="week">Week</button>
+                        <button class="chart-btn active" data-period="month">Month</button>
+                        <button class="chart-btn" data-period="year">Year</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Booking Chart -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-calendar-check"></i> Booking Trends</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="bookingChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Vehicle Utilization -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-pie"></i> Vehicle Utilization</h3>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="vehicleChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top Performing Vehicles -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-trophy"></i> Top Performing Vehicles</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="report-table" id="topVehiclesTable">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Vehicle</th>
+                                <th>Total Bookings</th>
+                                <th>Revenue</th>
+                                <th>Utilization Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topVehiclesBody">
+                            <tr><td colspan="5" class="text-center">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent Bookings Report -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3><i class="fas fa-list"></i> Recent Bookings Report</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="report-table" id="recentBookingsTable">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Pickup Date</th>
+                                <th>Return Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentBookingsBody">
+                            <tr><td colspan="7" class="text-center">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        // Chart instances
+        let revenueChart = null;
+        let bookingChart = null;
+        let vehicleChart = null;
+        
+        // Current period
+        let currentPeriod = 'month';
+        
+        // Check authentication
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'admin') {
+            window.location.href = '../../login.html';
+        }
+        document.getElementById('userName').textContent = user.name || 'Admin';
+        
+        // Mock data for demonstration
+        const mockData = {
+            revenue: {
+                week: [1250, 1890, 2100, 2450, 2980, 3420, 3890],
+                month: [12500, 14800, 16200, 18500, 21200, 23800, 26500, 29100, 31800, 34500, 37200, 39800],
+                year: [125000, 148000, 162000, 185000, 212000, 238000]
+            },
+            bookings: {
+                week: [12, 18, 21, 24, 29, 33, 38],
+                month: [125, 148, 162, 185, 212, 238, 265, 291, 318, 345, 372, 398],
+                year: [1250, 1480, 1620, 1850, 2120, 2380]
+            },
+            labels: {
+                week: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                year: ['2020', '2021', '2022', '2023', '2024', '2025']
+            },
+            vehicleUtilization: {
+                labels: ['Toyota RAV4', 'Suzuki Jimny', 'Mitsubishi Pajero', 'Hyundai i10', 'Toyota Camry'],
+                data: [85, 72, 68, 55, 48]
+            },
+            topVehicles: [
+                { rank: 1, name: 'Toyota RAV4', bookings: 245, revenue: 13475, utilization: 85 },
+                { rank: 2, name: 'Suzuki Jimny', bookings: 198, revenue: 8910, utilization: 72 },
+                { rank: 3, name: 'Mitsubishi Pajero', bookings: 156, revenue: 13260, utilization: 68 },
+                { rank: 4, name: 'Toyota Camry', bookings: 142, revenue: 9230, utilization: 55 },
+                { rank: 5, name: 'Hyundai i10', bookings: 128, revenue: 3840, utilization: 48 }
+            ],
+            recentBookings: [
+                { id: 'BK001', customer: 'John Doe', vehicle: 'Toyota RAV4', pickup: '2024-12-01', return: '2024-12-05', amount: 275, status: 'active' },
+                { id: 'BK002', customer: 'Sarah Chen', vehicle: 'Suzuki Jimny', pickup: '2024-11-15', return: '2024-11-18', amount: 135, status: 'completed' },
+                { id: 'BK003', customer: 'Maria Garcia', vehicle: 'Mitsubishi Pajero', pickup: '2024-12-10', return: '2024-12-15', amount: 425, status: 'pending' },
+                { id: 'BK004', customer: 'David Kim', vehicle: 'Toyota Camry', pickup: '2024-11-20', return: '2024-11-25', amount: 325, status: 'completed' },
+                { id: 'BK005', customer: 'Lisa Wong', vehicle: 'Hyundai i10', pickup: '2024-12-05', return: '2024-12-07', amount: 60, status: 'active' }
+            ]
+        };
+        
+        // Stats data
+        const stats = {
+            totalRevenue: 125450,
+            totalBookings: 869,
+            activeCustomers: 342,
+            completionRate: 94,
+            previousRevenue: 98500,
+            previousBookings: 742,
+            previousCustomers: 298,
+            previousCompletion: 91
+        };
+        
+        // Update stats display
+        function updateStats() {
+            document.getElementById('totalRevenue').textContent = `$${stats.totalRevenue.toLocaleString()}`;
+            document.getElementById('totalBookings').textContent = stats.totalBookings.toLocaleString();
+            document.getElementById('activeCustomers').textContent = stats.activeCustomers.toLocaleString();
+            document.getElementById('completionRate').textContent = `${stats.completionRate}%`;
+            
+            // Calculate trends
+            const revenueChange = ((stats.totalRevenue - stats.previousRevenue) / stats.previousRevenue * 100).toFixed(1);
+            const bookingChange = ((stats.totalBookings - stats.previousBookings) / stats.previousBookings * 100).toFixed(1);
+            const customerChange = ((stats.activeCustomers - stats.previousCustomers) / stats.previousCustomers * 100).toFixed(1);
+            const completionChange = (stats.completionRate - stats.previousCompletion).toFixed(1);
+            
+            document.getElementById('revenueTrend').innerHTML = `<i class="fas fa-arrow-${revenueChange >= 0 ? 'up' : 'down'}"></i> ${Math.abs(revenueChange)}% vs previous period`;
+            document.getElementById('revenueTrend').className = `trend ${revenueChange >= 0 ? 'trend-up' : 'trend-down'}`;
+            
+            document.getElementById('bookingTrend').innerHTML = `<i class="fas fa-arrow-${bookingChange >= 0 ? 'up' : 'down'}"></i> ${Math.abs(bookingChange)}% vs previous period`;
+            document.getElementById('bookingTrend').className = `trend ${bookingChange >= 0 ? 'trend-up' : 'trend-down'}`;
+            
+            document.getElementById('customerTrend').innerHTML = `<i class="fas fa-arrow-${customerChange >= 0 ? 'up' : 'down'}"></i> ${Math.abs(customerChange)}% vs previous period`;
+            document.getElementById('customerTrend').className = `trend ${customerChange >= 0 ? 'trend-up' : 'trend-down'}`;
+            
+            document.getElementById('completionTrend').innerHTML = `<i class="fas fa-arrow-${completionChange >= 0 ? 'up' : 'down'}"></i> ${Math.abs(completionChange)}% vs previous period`;
+            document.getElementById('completionTrend').className = `trend ${completionChange >= 0 ? 'trend-up' : 'trend-down'}`;
+        }
+        
+        // Create Revenue Chart
+        function createRevenueChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            if (revenueChart) {
+                revenueChart.destroy();
+            }
+            
+            const data = mockData.revenue[currentPeriod];
+            const labels = mockData.labels[currentPeriod];
+            
+            revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: data,
+                        borderColor: '#e67e22',
+                        backgroundColor: 'rgba(230, 126, 34, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#e67e22',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `$${context.raw.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create Booking Chart
+        function createBookingChart() {
+            const ctx = document.getElementById('bookingChart').getContext('2d');
+            
+            if (bookingChart) {
+                bookingChart.destroy();
+            }
+            
+            const data = mockData.bookings[currentPeriod];
+            const labels = mockData.labels[currentPeriod];
+            
+            bookingChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Number of Bookings',
+                        data: data,
+                        backgroundColor: 'rgba(230, 126, 34, 0.8)',
+                        borderColor: '#e67e22',
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create Vehicle Utilization Chart (Pie)
+        function createVehicleChart() {
+            const ctx = document.getElementById('vehicleChart').getContext('2d');
+            
+            if (vehicleChart) {
+                vehicleChart.destroy();
+            }
+            
+            vehicleChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: mockData.vehicleUtilization.labels,
+                    datasets: [{
+                        data: mockData.vehicleUtilization.data,
+                        backgroundColor: [
+                            '#e67e22',
+                            '#f39c12',
+                            '#3498db',
+                            '#27ae60',
+                            '#9b59b6'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}% utilization`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Display top vehicles
+        function displayTopVehicles() {
+            const tbody = document.getElementById('topVehiclesBody');
+            tbody.innerHTML = mockData.topVehicles.map(vehicle => `
+                <tr>
+                    <td>${vehicle.rank}</td>
+                    <td><i class="fas fa-car"></i> ${vehicle.name}</td>
+                    <td>${vehicle.bookings}</td>
+                    <td>$${vehicle.revenue.toLocaleString()}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div class="progress-bar" style="flex: 1; background: #e0e0e0;">
+                                <div class="progress-fill" style="width: ${vehicle.utilization}%; background: #e67e22;"></div>
+                            </div>
+                            <span>${vehicle.utilization}%</span>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Display recent bookings
+        function displayRecentBookings() {
+            const tbody = document.getElementById('recentBookingsBody');
+            tbody.innerHTML = mockData.recentBookings.map(booking => `
+                <tr>
+                    <td>${booking.id}</td>
+                    <td>${booking.customer}</td>
+                    <td>${booking.vehicle}</td>
+                    <td>${booking.pickup}</td>
+                    <td>${booking.return}</td>
+                    <td>$${booking.amount}</td>
+                    <td><span class="status-badge status-${booking.status}">${booking.status}</span></td>
+                </tr>
+            `).join('');
+        }
+        
+        // Export to Excel
+        function exportToExcel() {
+            const data = mockData.recentBookings.map(booking => ({
+                'Booking ID': booking.id,
+                'Customer': booking.customer,
+                'Vehicle': booking.vehicle,
+                'Pickup Date': booking.pickup,
+                'Return Date': booking.return,
+                'Amount': booking.amount,
+                'Status': booking.status
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Bookings Report');
+            XLSX.writeFile(wb, `rwandago_bookings_report_${new Date().toISOString().split('T')[0]}.xlsx`);
+            
+            showNotification('Excel file downloaded successfully!', 'success');
+        }
+        
+        // Export to CSV
+        function exportToCSV() {
+            const headers = ['Booking ID,Customer,Vehicle,Pickup Date,Return Date,Amount,Status'];
+            const rows = mockData.recentBookings.map(booking => 
+                `${booking.id},${booking.customer},${booking.vehicle},${booking.pickup},${booking.return},${booking.amount},${booking.status}`
+            );
+            
+            const csvContent = [...headers, ...rows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `rwandago_bookings_report_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showNotification('CSV file downloaded successfully!', 'success');
+        }
+        
+        // Export to PDF (simulated)
+        function exportToPDF() {
+            showNotification('PDF export feature coming soon!', 'info');
+            // In production, you can use jsPDF or similar library
+        }
+        
+        // Apply date range filter
+        function applyDateRange() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            showNotification(`Filtering reports from ${startDate} to ${endDate}`, 'info');
+            // In production, fetch filtered data from API
+        }
+        
+        // Change chart period
+        function changePeriod(period) {
+            currentPeriod = period;
+            
+            // Update active button
+            document.querySelectorAll('.chart-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.period === period) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Refresh charts
+            createRevenueChart();
+            createBookingChart();
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i><span>${message}</span>`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('applyDateRange').addEventListener('click', applyDateRange);
+            document.getElementById('exportExcel').addEventListener('click', exportToExcel);
+            document.getElementById('exportCSV').addEventListener('click', exportToCSV);
+            document.getElementById('exportPDF').addEventListener('click', exportToPDF);
+            
+            document.querySelectorAll('.chart-btn').forEach(btn => {
+                btn.addEventListener('click', () => changePeriod(btn.dataset.period));
+            });
+            
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                session.clearSession();
+                window.location.href = '../../login.html';
+            });
+            
+            document.getElementById('dropdownLogout').addEventListener('click', () => {
+                session.clearSession();
+                window.location.href = '../../login.html';
+            });
+            
+            document.getElementById('userDropdown').addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelector('.dropdown-menu').classList.toggle('show');
+            });
+            
+            document.addEventListener('click', () => {
+                document.querySelector('.dropdown-menu')?.classList.remove('show');
+            });
+            
+            document.getElementById('menuToggle').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+        }
+        
+        // Initialize all charts and data
+        function init() {
+            updateStats();
+            createRevenueChart();
+            createBookingChart();
+            createVehicleChart();
+            displayTopVehicles();
+            displayRecentBookings();
+            setupEventListeners();
+        }
+        
+        // Add fadeOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+            .progress-bar {
+                background: #e0e0e0;
+                border-radius: 10px;
+                height: 8px;
+                overflow: hidden;
+            }
+            .progress-fill {
+                height: 100%;
+                border-radius: 10px;
+                transition: width 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Start the dashboard
+        init();
+    </script>
+</body>
+</html>

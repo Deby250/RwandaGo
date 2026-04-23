@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour Packages | Tourist Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        .tour-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .tour-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .tour-image {
+            height: 160px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+        .tour-price-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--secondary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .tour-content {
+            padding: 1rem;
+        }
+        .tour-meta {
+            display: flex;
+            gap: 1rem;
+            margin: 0.5rem 0;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+        .btn-book-tour {
+            width: 100%;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Tourist Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="bookings.html"><i class="fas fa-calendar-check"></i> My Bookings</a>
+                <a href="new-booking.html"><i class="fas fa-plus-circle"></i> New Booking</a>
+                <a href="active-trip.html"><i class="fas fa-map-marked-alt"></i> Active Trip</a>
+                <a href="tours.html" class="active"><i class="fas fa-umbrella-beach"></i> Tour Packages</a>
+                <a href="profile.html"><i class="fas fa-user"></i> My Profile</a>
+                <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Tour Packages</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <img src="https://randomuser.me/api/portraits/men/1.jpg" class="user-avatar">
+                        <span class="user-name" id="userName">Loading...</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                            <a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a>
+                            <hr>
+                            <a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-umbrella-beach"></i> Available Tour Packages</h2>
+                </div>
+
+                <div class="filter-group">
+                    <button class="filter-chip active" data-category="all">All Tours</button>
+                    <button class="filter-chip" data-category="adventure">Adventure</button>
+                    <button class="filter-chip" data-category="nature">Nature</button>
+                    <button class="filter-chip" data-category="wildlife">Wildlife</button>
+                    <button class="filter-chip" data-category="cultural">Cultural</button>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="searchTours" placeholder="Search tours...">
+                    <i class="fas fa-search" style="align-self: center;"></i>
+                </div>
+
+                <div class="tours-grid" id="toursGrid"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        const tours = [
+            { id: 1, name: 'Volcanoes National Park', description: 'Gorilla trekking adventure in the misty mountains', duration: '2 days', price: 500, category: 'adventure', image: '🏔️', maxPeople: 8 },
+            { id: 2, name: 'Nyungwe Forest Canopy', description: 'Walk among the treetops in ancient rainforest', duration: '2 days', price: 350, category: 'nature', image: '🌳', maxPeople: 10 },
+            { id: 3, name: 'Lake Kivu Escape', description: 'Relaxing lakeside retreat with water activities', duration: '3 days', price: 450, category: 'nature', image: '💧', maxPeople: 6 },
+            { id: 4, name: 'Akagera Safari', description: 'Big five wildlife experience in savannah', duration: '2 days', price: 400, category: 'wildlife', image: '🦒', maxPeople: 12 },
+            { id: 5, name: 'Kigali City Tour', description: 'Explore Rwanda\'s vibrant capital city', duration: '1 day', price: 100, category: 'cultural', image: '🏙️', maxPeople: 15 }
+        ];
+
+        let currentCategory = 'all';
+        let currentSearch = '';
+
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'tourist') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Tourist';
+
+        function loadTours() {
+            let filtered = tours;
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(t => t.category === currentCategory);
+            }
+            
+            if (currentSearch) {
+                filtered = filtered.filter(t => 
+                    t.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    t.description.toLowerCase().includes(currentSearch.toLowerCase())
+                );
+            }
+            
+            displayTours(filtered);
+        }
+
+        function displayTours(toursList) {
+            const grid = document.getElementById('toursGrid');
+            if (toursList.length === 0) {
+                grid.innerHTML = '<div class="text-center">No tours found</div>';
+                return;
+            }
+            
+            grid.innerHTML = toursList.map(tour => `
+                <div class="tour-card">
+                    <div class="tour-image">
+                        ${tour.image}
+                        <div class="tour-price-badge">$${tour.price}</div>
+                    </div>
+                    <div class="tour-content">
+                        <h3>${tour.name}</h3>
+                        <p>${tour.description}</p>
+                        <div class="tour-meta">
+                            <span><i class="fas fa-clock"></i> ${tour.duration}</span>
+                            <span><i class="fas fa-users"></i> Max ${tour.maxPeople}</span>
+                        </div>
+                        <button class="btn-book-tour" onclick="bookTour(${tour.id})">Book Now</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function bookTour(id) {
+            alert('Tour booking feature coming soon!');
+        }
+
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentCategory = chip.dataset.category;
+                loadTours();
+            });
+        });
+
+        document.getElementById('searchTours').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            loadTours();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+
+        loadTours();
+    </script>
+</body>
+</html>

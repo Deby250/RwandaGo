@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support | Tourist Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        .contact-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        .contact-item i {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+        .faq-item {
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 1rem;
+        }
+        .faq-question {
+            padding: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+        .faq-answer {
+            padding: 0 1rem 1rem;
+            display: none;
+            color: var(--gray);
+        }
+        .faq-answer.show {
+            display: block;
+        }
+        .ticket-list {
+            margin-top: 1rem;
+        }
+        .ticket-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Tourist Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="bookings.html"><i class="fas fa-calendar-check"></i> My Bookings</a>
+                <a href="new-booking.html"><i class="fas fa-plus-circle"></i> New Booking</a>
+                <a href="active-trip.html"><i class="fas fa-map-marked-alt"></i> Active Trip</a>
+                <a href="tours.html"><i class="fas fa-umbrella-beach"></i> Tour Packages</a>
+                <a href="profile.html"><i class="fas fa-user"></i> My Profile</a>
+                <a href="support.html" class="active"><i class="fas fa-headset"></i> Support</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Support Center</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <img src="https://randomuser.me/api/portraits/men/1.jpg" class="user-avatar">
+                        <span class="user-name" id="userName">Loading...</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                            <a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a>
+                            <hr>
+                            <a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="support-grid">
+                <!-- Contact Information -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-headset"></i> Contact Us</h2>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Emergency Hotline</h4>
+                            <a href="tel:+250788123456">+250 788 123 456</a>
+                            <p style="font-size: 0.8rem;">24/7 Available</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>WhatsApp Support</h4>
+                            <a href="https://wa.me/250788123456">+250 788 123 456</a>
+                            <p style="font-size: 0.8rem;">Response within 5 minutes</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email Support</h4>
+                            <a href="mailto:support@rwandago.rw">support@rwandago.rw</a>
+                            <p style="font-size: 0.8rem;">Response within 24 hours</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Ticket -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-ticket-alt"></i> Submit a Ticket</h2>
+                    </div>
+                    <form id="ticketForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="Subject" id="ticketSubject" required>
+                        </div>
+                        <div class="form-group">
+                            <select id="ticketCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="booking">Booking Issue</option>
+                                <option value="payment">Payment Problem</option>
+                                <option value="vehicle">Vehicle Issue</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea rows="4" placeholder="Describe your issue..." id="ticketMessage" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Submit Ticket</button>
+                    </form>
+                </div>
+
+                <!-- FAQ -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How do I cancel my booking? <i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer">You can cancel your booking up to 24 hours before pickup for a full refund.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">What documents do I need? <i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer">Valid driver's license, passport, and international driving permit if required.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Is insurance included? <i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer">Yes, basic insurance is included. Premium insurance is available as an add-on.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">What is the fuel policy? <i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer">Vehicles are provided with a full tank and must be returned with a full tank.</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'tourist') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Tourist';
+
+        document.getElementById('ticketForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Ticket submitted successfully! We\'ll respond within 24 hours.');
+            e.target.reset();
+        });
+
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                q.classList.toggle('active');
+                q.nextElementSibling.classList.toggle('show');
+            });
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+    </script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Our Fleet | RwandaGo - Premium Vehicles for Rent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1a1a2e;
+            background: #f8f9fa;
+        }
+
+        /* Navigation Styles (same as features page) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0a3b2f;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            color: #e67e22;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: #1a1a2e;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #e67e22;
+        }
+        
+        .btn-login {
+            background: #e67e22;
+            color: white !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        
+        .btn-login:hover {
+            background: #cf711f;
+            transform: translateY(-2px);
+        }
+        
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #0a3b2f;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #0a3b2f 0%, #06261e 100%);
+            color: white;
+            padding: 120px 0 60px;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: white;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 70px;
+            z-index: 99;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .filter-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            border: 2px solid #e67e22;
+            background: transparent;
+            color: #e67e22;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background: #e67e22;
+            color: white;
+        }
+
+        /* Vehicles Grid */
+        .vehicles-section {
+            padding: 3rem 0;
+        }
+        
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .vehicle-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .vehicle-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .vehicle-image {
+            height: 200px;
+            background: linear-gradient(135deg, #145c48, #0a3b2f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+        }
+        
+        .vehicle-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #27ae60;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .vehicle-info {
+            padding: 1.5rem;
+        }
+        
+        .vehicle-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #0a3b2f;
+        }
+        
+        .vehicle-specs {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            color: #6c757d;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+        
+        .vehicle-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #e67e22;
+            margin: 1rem 0;
+        }
+        
+        .vehicle-price span {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .btn-book {
+            width: 100%;
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-book:hover {
+            background: #cf711f;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: #0a0a1a;
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-col a {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-col a:hover {
+            color: #e67e22;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: white;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+                z-index: 1000;
+                padding: 2rem;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .filter-group {
+                gap: 0.5rem;
+            }
+            
+            .filter-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .logo span {
+                display: none;
+            }
+            
+            .vehicle-specs {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <a href="../index.html" class="logo">
+                    <i class="fas fa-car"></i>
+                    <span>RwandaGo</span>
+                </a>
+                <div class="mobile-menu" id="mobileMenu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="nav-links" id="navLinks">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="vehicles.html" class="nav-link active">Vehicles</a>
+                    <a href="features.html" class="nav-link">Features</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                    <a href="../login.html" class="btn-login">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Our Premium Fleet</h1>
+            <p>Choose from our wide range of well-maintained vehicles</p>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filter-group">
+                <button class="filter-btn active" data-category="all">All Vehicles</button>
+                <button class="filter-btn" data-category="suv">SUVs</button>
+                <button class="filter-btn" data-category="sedan">Sedans</button>
+                <button class="filter-btn" data-category="economy">Economy</button>
+                <button class="filter-btn" data-category="luxury">Luxury</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vehicles Grid -->
+    <section class="vehicles-section">
+        <div class="container">
+            <div class="vehicles-grid" id="vehiclesGrid"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>RwandaGo</h4>
+                    <p>Your trusted partner for car rental and touring in Rwanda.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <a href="../index.html">Home</a>
+                    <a href="vehicles.html">Vehicles</a>
+                    <a href="features.html">Features</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <a href="faq.html">FAQ</a>
+                    <a href="terms.html">Terms</a>
+                    <a href="privacy.html">Privacy</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <a href="tel:+250788123456"><i class="fas fa-phone"></i> +250 788 123 456</a>
+                    <a href="mailto:support@rwandago.rw"><i class="fas fa-envelope"></i> support@rwandago.rw</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 RwandaGo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Vehicle Data
+        const vehicles = [
+            { id: 1, name: 'Toyota RAV4', category: 'suv', seats: 5, bags: 3, transmission: 'Automatic', fuel: 'Petrol', price: 55, image: '🚙', available: true },
+            { id: 2, name: 'Suzuki Jimny', category: 'suv', seats: 4, bags: 2, transmission: 'Manual', fuel: 'Petrol', price: 45, image: '🚘', available: true },
+            { id: 3, name: 'Mitsubishi Pajero', category: 'suv', seats: 7, bags: 4, transmission: 'Automatic', fuel: 'Diesel', price: 85, image: '🚐', available: true },
+            { id: 4, name: 'Hyundai i10', category: 'economy', seats: 4, bags: 2, transmission: 'Manual', fuel: 'Petrol', price: 30, image: '🚗', available: true },
+            { id: 5, name: 'Toyota Camry', category: 'sedan', seats: 5, bags: 3, transmission: 'Automatic', fuel: 'Petrol', price: 65, image: '🚙', available: true },
+            { id: 6, name: 'Mercedes C-Class', category: 'luxury', seats: 5, bags: 3, transmission: 'Automatic', fuel: 'Petrol', price: 120, image: '🏎️', available: true }
+        ];
+
+        // Display Vehicles
+        function displayVehicles(category = 'all') {
+            const filtered = category === 'all' ? vehicles : vehicles.filter(v => v.category === category);
+            const grid = document.getElementById('vehiclesGrid');
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 3rem;">No vehicles found in this category</div>';
+                return;
+            }
+            
+            grid.innerHTML = filtered.map(vehicle => `
+                <div class="vehicle-card">
+                    <div class="vehicle-image">
+                        ${vehicle.image}
+                        ${vehicle.available ? '<div class="vehicle-badge">Available</div>' : ''}
+                    </div>
+                    <div class="vehicle-info">
+                        <h3>${vehicle.name}</h3>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-users"></i> ${vehicle.seats} seats</span>
+                            <span><i class="fas fa-suitcase"></i> ${vehicle.bags} bags</span>
+                            <span><i class="fas fa-cog"></i> ${vehicle.transmission}</span>
+                            <span><i class="fas fa-gas-pump"></i> ${vehicle.fuel}</span>
+                        </div>
+                        <div class="vehicle-price">
+                            $${vehicle.price} <span>/ day</span>
+                        </div>
+                        <button class="btn-book" onclick="bookVehicle(${vehicle.id})">
+                            <i class="fas fa-calendar-check"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Book Vehicle
+        function bookVehicle(id) {
+            const user = sessionStorage.getItem('rwandago_user') || localStorage.getItem('rwandago_user');
+            if (user) {
+                window.location.href = '../dashboard/tourist/new-booking.html';
+            } else {
+                sessionStorage.setItem('redirectAfterLogin', '../dashboard/tourist/new-booking.html');
+                window.location.href = '../login.html';
+            }
+        }
+
+        // Filter Event Listeners
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                displayVehicles(btn.dataset.category);
+            });
+        });
+
+        // Mobile Menu
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navLinks = document.getElementById('navLinks');
+        const navbar = document.getElementById('navbar');
+        
+        if (mobileMenu) {
+            mobileMenu.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+        }
+        
+        document.querySelectorAll('.nav-link, .btn-login').forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.classList.remove('active');
+            });
+        });
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Initialize
+        displayVehicles();
+        
+        // Update login button
+        const loginBtn = document.querySelector('.btn-login');
+        const user = sessionStorage.getItem('rwandago_user') || localStorage.getItem('rwandago_user');
+        
+        if (user && loginBtn) {
+            const userData = JSON.parse(user);
+            loginBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userData.name || 'Account'}`;
+            loginBtn.href = '#';
+            loginBtn.onclick = (e) => {
+                e.preventDefault();
+                const roleRedirects = {
+                    'tourist': '../dashboard/tourist/index.html',
+                    'admin': '../dashboard/admin/index.html',
+                    'support': '../dashboard/support/index.html',
+                    'driver': '../dashboard/driver/index.html'
+                };
+                window.location.href = roleRedirects[userData.role] || '../index.html';
+            };
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Overview | Admin Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<link rel="stylesheet" href="../../assets/css/dashboard.css">
+</head>
+<body>
+<button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+<div class="dashboard-container">
+<aside class="sidebar" id="sidebar"><div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Admin Portal</p></div>
+<nav class="sidebar-nav"><a href="overview.html" class="active"><i class="fas fa-tachometer-alt"></i> Overview</a><a href="vehicles.html"><i class="fas fa-car"></i> Vehicles</a><a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a><a href="customers.html"><i class="fas fa-users"></i> Customers</a><a href="reports.html"><i class="fas fa-chart-line"></i> Reports</a><a href="settings.html"><i class="fas fa-cog"></i> Settings</a><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></nav></aside>
+<main class="main-content"><div class="top-bar"><h1>Admin Dashboard</h1><div class="user-info"><div class="user-dropdown" id="userDropdown"><i class="fas fa-user-circle" style="font-size:2rem"></i><span class="user-name" id="userName">Admin</span><i class="fas fa-chevron-down"></i><div class="dropdown-menu"><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div></div></div></div>
+<div class="stats-grid"><div class="stat-card"><div class="stat-icon"><i class="fas fa-car"></i></div><div class="stat-info"><h3>24</h3><p>Total Vehicles</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-check"></i></div><div class="stat-info"><h3>12</h3><p>Active Bookings</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><h3>156</h3><p>Total Customers</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><h3>$12,450</h3><p>Revenue (Month)</p></div></div></div>
+<div class="card"><div class="card-header"><h2>Recent Bookings</h2></div><div class="table-responsive"><table class="data-table"><thead><tr><th>ID</th><th>Customer</th><th>Vehicle</th><th>Dates</th><th>Status</th></tr></thead><tbody><tr><td>BK001</td><td>John Doe</td><td>Toyota RAV4</td><td>Dec 1-5</td><td><span class="status-badge status-active">Active</span></td></tr><tr><td>BK002</td><td>Sarah Chen</td><td>Suzuki Jimny</td><td>Nov 15-18</td><td><span class="status-badge status-completed">Completed</span></td></tr></tbody></table></div></div></main></div>
+<script src="../../assets/js/core/session.js"></script>
+<script>
+const user = session.getCurrentUser();
+if (!user || user.role !== 'admin') window.location.href = '../../login.html';
+document.getElementById('userName').textContent = user.name || 'Admin';
+document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+</script>
+</body>
+</html>

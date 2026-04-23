@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Overview | Tourist Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<link rel="stylesheet" href="../../assets/css/dashboard.css">
+</head>
+<body>
+<button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+<div class="dashboard-container">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Tourist Portal</p></div>
+<nav class="sidebar-nav">
+<a href="overview.html" class="active"><i class="fas fa-tachometer-alt"></i> Overview</a>
+<a href="bookings.html"><i class="fas fa-calendar-check"></i> My Bookings</a>
+<a href="new-booking.html"><i class="fas fa-plus-circle"></i> New Booking</a>
+<a href="active-trip.html"><i class="fas fa-map-marked-alt"></i> Active Trip</a>
+<a href="tours.html"><i class="fas fa-umbrella-beach"></i> Tour Packages</a>
+<a href="profile.html"><i class="fas fa-user"></i> My Profile</a>
+<a href="support.html"><i class="fas fa-headset"></i> Support</a>
+<a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</nav>
+</aside>
+<main class="main-content">
+<div class="top-bar"><h1>Dashboard Overview</h1><div class="user-info"><div class="user-dropdown" id="userDropdown"><img src="https://randomuser.me/api/portraits/men/1.jpg" class="user-avatar"><span class="user-name" id="userName">Loading...</span><i class="fas fa-chevron-down"></i><div class="dropdown-menu"><a href="profile.html"><i class="fas fa-user"></i> Profile</a><a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a><hr><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div></div></div></div>
+<div class="stats-grid"><div class="stat-card"><div class="stat-icon"><i class="fas fa-car"></i></div><div class="stat-info"><h3 id="activeBookings">1</h3><p>Active Bookings</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-map-marked-alt"></i></div><div class="stat-info"><h3 id="completedTours">5</h3><p>Tours Completed</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-info"><h3 id="totalHours">48</h3><p>Driving Hours</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><h3 id="totalSpent">$1,250</h3><p>Total Spent</p></div></div></div>
+<div class="card"><div class="card-header"><h2>Recent Bookings</h2><a href="bookings.html" class="btn-sm btn-outline">View All</a></div><div class="table-responsive"><table class="data-table"><thead><tr><th>ID</th><th>Car</th><th>Start Date</th><th>End Date</th><th>Status</th></tr></thead><tbody><tr><td>BK001</td><td>Toyota RAV4</td><td>Dec 1, 2024</td><td>Dec 5, 2024</td><td><span class="status-badge status-active">Active</span></td></tr><tr><td>BK002</td><td>Suzuki Jimny</td><td>Nov 15, 2024</td><td>Nov 18, 2024</td><td><span class="status-badge status-completed">Completed</span></td></tr></tbody></table></div></div>
+</main>
+</div>
+<script src="../../assets/js/core/session.js"></script>
+<script>
+const user = session.getCurrentUser();
+if (!user || user.role !== 'tourist') window.location.href = '../../login.html';
+document.getElementById('userName').textContent = user.name || 'Tourist';
+document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+</script>
+</body>
+</html>

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Sign In | RwandaGo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a3b2f;
+            --primary-dark: #06261e;
+            --secondary: #e67e22;
+            --secondary-dark: #cf711f;
+            --dark: #1a1a2e;
+            --gray: #6c757d;
+            --light: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a3b2f 0%, #06261e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin-top: 80px;
+        }
+
+        /* ========================================
+           RESPONSIVE NAVIGATION BAR
+        ======================================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .logo i {
+            color: var(--secondary);
+            font-size: 1.8rem;
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        /* Desktop Navigation */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .btn-login {
+            background: var(--secondary);
+            color: white !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(230, 126, 34, 0.3);
+        }
+
+        .btn-login::after {
+            display: none;
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+            transition: color 0.3s ease;
+            z-index: 1001;
+        }
+
+        .mobile-menu:hover {
+            color: var(--secondary);
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            max-width: 440px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, #0a3b2f, #06261e);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .auth-header i {
+            font-size: 3rem;
+            color: #e67e22;
+            margin-bottom: 1rem;
+        }
+
+        .auth-header h1 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        .auth-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        label i {
+            color: #e67e22;
+            margin-right: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #e67e22;
+            box-shadow: 0 0 0 3px rgba(230,126,34,0.1);
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox input {
+            width: auto;
+        }
+
+        .forgot-password {
+            color: #e67e22;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: #e67e22;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #cf711f;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .demo-credentials h4 {
+            color: #e67e22;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .demo-credentials p {
+            margin: 8px 0;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .demo-credentials p:hover {
+            color: #e67e22;
+        }
+
+        .demo-credentials code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #dc2626;
+            border-left: 4px solid #dc2626;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #16a34a;
+            border-left: 4px solid #16a34a;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        /* ========================================
+           RESPONSIVE BREAKPOINTS
+        ======================================== */
+
+        /* Tablet (768px - 1024px) */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .nav-links {
+                gap: 1.5rem;
+            }
+        }
+
+        /* Mobile (up to 768px) */
+        @media (max-width: 768px) {
+            body {
+                margin-top: 70px;
+                padding: 15px;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: white;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                padding: 2rem;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 1.1rem;
+                width: 100%;
+                text-align: center;
+                padding: 0.75rem;
+            }
+
+            .nav-links a::after {
+                display: none;
+            }
+
+            .btn-login {
+                width: 100%;
+                text-align: center;
+                margin-top: 0.5rem;
+            }
+
+            /* Close button for mobile menu */
+            .nav-links::before {
+                content: '\f00d';
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 1.5rem;
+                cursor: pointer;
+                color: #666;
+                transition: color 0.3s ease;
+            }
+
+            .nav-links::before:hover {
+                color: #e67e22;
+            }
+
+            /* Adjust logo size on mobile */
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .logo i {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Small Mobile (up to 480px) */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .logo i {
+                font-size: 1.8rem;
+            }
+
+            .nav-links {
+                width: 100%;
+                right: -100%;
+            }
+
+            .nav-links a {
+                font-size: 1rem;
+            }
+
+            .auth-body {
+                padding: 1.5rem;
+            }
+
+            .auth-header {
+                padding: 1.5rem;
+            }
+
+            .auth-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* Landscape Mode on Mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .nav-links {
+                padding: 1rem;
+                gap: 1rem;
+                justify-content: flex-start;
+                overflow-y: auto;
+            }
+
+            .nav-links a {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .auth-body {
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-car"></i>
+                    <span>RwandaGo</span>
+                </a>
+                <div class="mobile-menu" id="mobileMenu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html">Home</a>
+                    <a href="pages/vehicles.html">Vehicles</a>
+                    <a href="pages/features.html">Features</a>
+                    <a href="pages/contact.html">Contact</a>
+                    <a href="login.html" class="btn-login" id="loginNavBtn">Sign In</a>
+                </div>
+            </div>
+        </div>
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <i class="fas fa-car"></i>
+            <h1>Welcome Back</h1>
+            <p>Sign in to continue your journey</p>
+        </div>
+        <div class="auth-body">
+            <div id="alert" class="alert"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="email" placeholder="your@email.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+                <div class="form-options">
+                    <label class="checkbox">
+                        <input type="checkbox" id="rememberMe"> Remember me
+                    </label>
+                    <a href="#" id="forgotPassword" class="forgot-password">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+            <div class="text-center mt-3">
+                Don't have an account? <a href="signup.html">Create Account</a>
+            </div>
+            <div class="demo-credentials">
+                <h4><i class="fas fa-info-circle"></i> Demo Accounts (Click to auto-fill)</h4>
+                <p onclick="fillCredentials('tourist@rwandago.com', 'password123')">
+                    <strong>Tourist:</strong> <code>tourist@rwandago.com</code> / <code>password123</code>
+                </p>
+                <p onclick="fillCredentials('admin@rwandago.com', 'password123')">
+                    <strong>Admin:</strong> <code>admin@rwandago.com</code> / <code>password123</code>
+                </p>
+                <p onclick="fillCredentials('support@rwandago.com', 'password123')">
+                    <strong>Support:</strong> <code>support@rwandago.com</code> / <code>password123</code>
+                </p>
+                <p onclick="fillCredentials('driver@rwandago.com', 'password123')">
+                    <strong>Driver:</strong> <code>driver@rwandago.com</code> / <code>password123</code>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo users database
+        let DEMO_USERS = {
+            'tourist@rwandago.com': { password: 'password123', role: 'tourist', name: 'John Doe', firstName: 'John', lastName: 'Doe', phone: '+250788123456' },
+            'admin@rwandago.com': { password: 'password123', role: 'admin', name: 'Admin User', firstName: 'Admin', lastName: 'User', phone: '+250788123457' },
+            'support@rwandago.com': { password: 'password123', role: 'support', name: 'Support Agent', firstName: 'Support', lastName: 'Agent', phone: '+250788123458' },
+            'driver@rwandago.com': { password: 'password123', role: 'driver', name: 'Driver Guide', firstName: 'Driver', lastName: 'Guide', phone: '+250788123459' }
+        };
+
+        // Load additional users from localStorage
+        const savedUsers = localStorage.getItem('rwandago_users');
+        if (savedUsers) {
+            const additionalUsers = JSON.parse(savedUsers);
+            additionalUsers.forEach(user => {
+                DEMO_USERS[user.email] = {
+                    password: user.password,
+                    role: user.role,
+                    name: user.name,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    phone: user.phone
+                };
+            });
+        }
+
+        // DOM Elements
+        const form = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const alertDiv = document.getElementById('alert');
+        const navbar = document.getElementById('navbar');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const navLinks = document.getElementById('navLinks');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
+        // ========================================
+        // RESPONSIVE NAVIGATION FUNCTIONS
+        // ========================================
+        
+        // Toggle mobile menu
+        if (mobileMenu) {
+            mobileMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navLinks.classList.toggle('active');
+                mobileOverlay.classList.toggle('active');
+                document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+            });
+        }
+
+        // Close menu when clicking overlay
+        if (mobileOverlay) {
+            mobileOverlay.addEventListener('click', function() {
+                navLinks.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Set active link based on current page
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && currentPath.includes(href) && href !== 'index.html') {
+                link.classList.add('active');
+            } else if (currentPath.endsWith('index.html') && href === 'index.html') {
+                link.classList.add('active');
+            } else if ((currentPath === '/' || currentPath === '') && href === 'index.html') {
+                link.classList.add('active');
+            }
+        });
+
+        // ========================================
+        // LOGIN FUNCTIONS
+        // ========================================
+
+        function showAlert(message, type) {
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+            alertDiv.style.display = 'block';
+            setTimeout(() => { alertDiv.style.display = 'none'; }, 5000);
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+            } else {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+            }
+        }
+
+        window.fillCredentials = function(email, password) {
+            emailInput.value = email;
+            passwordInput.value = password;
+            showAlert('Credentials filled! Click Sign In to continue.', 'info');
+        };
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const rememberMe = document.getElementById('rememberMe')?.checked;
+            
+            if (!email || !password) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+            
+            setLoading(true);
+            
+            setTimeout(() => {
+                const userData = DEMO_USERS[email];
+                
+                if (userData && userData.password === password) {
+                    const user = {
+                        id: Date.now(),
+                        email: email,
+                        name: userData.name,
+                        role: userData.role,
+                        firstName: userData.firstName,
+                        lastName: userData.lastName,
+                        phone: userData.phone,
+                        loginTime: new Date().toISOString()
+                    };
+                    
+                    const storage = rememberMe ? localStorage : sessionStorage;
+                    storage.setItem('rwandago_user', JSON.stringify(user));
+                    storage.setItem('rwandago_token', 'demo_token_' + Date.now());
+                    storage.setItem('rwandago_role', user.role);
+                    
+                    showAlert(`Welcome back, ${user.name}! Redirecting to dashboard...`, 'success');
+                    
+                    const roleRedirects = {
+                        'tourist': 'dashboard/tourist/index.html',
+                        'admin': 'dashboard/admin/index.html',
+                        'support': 'dashboard/support/index.html',
+                        'driver': 'dashboard/driver/index.html'
+                    };
+                    
+                    setTimeout(() => {
+                        window.location.href = roleRedirects[user.role];
+                    }, 1500);
+                } else {
+                    showAlert('Invalid email or password. Please try again or create an account.', 'error');
+                    setLoading(false);
+                }
+            }, 1000);
+        });
+        
+        document.getElementById('forgotPassword')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = prompt('Please enter your email address to reset your password:');
+            if (email && email.includes('@')) {
+                showAlert(`Password reset link sent to ${email}. Please check your inbox.`, 'success');
+            } else if (email) {
+                showAlert('Please enter a valid email address', 'error');
+            }
+        });
+        
+        // Check if already logged in
+        const existingUser = sessionStorage.getItem('rwandago_user') || localStorage.getItem('rwandago_user');
+        if (existingUser) {
+            const user = JSON.parse(existingUser);
+            const roleRedirects = {
+                'tourist': 'dashboard/tourist/index.html',
+                'admin': 'dashboard/admin/index.html',
+                'support': 'dashboard/support/index.html',
+                'driver': 'dashboard/driver/index.html'
+            };
+            if (roleRedirects[user.role]) {
+                window.location.href = roleRedirects[user.role];
+            }
+        }
+    </script>
+</body>
+</html>

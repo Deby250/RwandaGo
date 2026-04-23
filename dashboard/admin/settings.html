@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .settings-section { margin-bottom: 2rem; }
+        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #e0e0e0; }
+        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.3s; border-radius: 24px; }
+        .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%; }
+        input:checked + .toggle-slider { background-color: var(--secondary); }
+        input:checked + .toggle-slider:before { transform: translateX(26px); }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Admin Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="vehicles.html"><i class="fas fa-car"></i> Vehicles</a>
+                <a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a>
+                <a href="customers.html"><i class="fas fa-users"></i> Customers</a>
+                <a href="reports.html"><i class="fas fa-chart-line"></i> Reports</a>
+                <a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>System Settings</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu"><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-globe"></i> General Settings</h2></div>
+                <form id="generalForm">
+                    <div class="form-group"><label>Site Name</label><input type="text" id="siteName" value="RwandaGo" class="w-100"></div>
+                    <div class="form-group"><label>Contact Email</label><input type="email" id="contactEmail" value="support@rwandago.rw" class="w-100"></div>
+                    <div class="form-group"><label>Contact Phone</label><input type="tel" id="contactPhone" value="+250788123456" class="w-100"></div>
+                    <div class="form-group"><label>Currency</label><select id="currency" class="w-100"><option>USD ($)</option><option>EUR (€)</option><option>GBP (£)</option></select></div>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-bell"></i> Notification Settings</h2></div>
+                <div class="setting-item"><div><strong>Email Notifications</strong><p style="font-size: 0.8rem;">Send email alerts for new bookings</p></div><label class="toggle-switch"><input type="checkbox" id="emailNotif" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-item"><div><strong>SMS Notifications</strong><p style="font-size: 0.8rem;">Send SMS alerts for emergencies</p></div><label class="toggle-switch"><input type="checkbox" id="smsNotif"><span class="toggle-slider"></span></label></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-percent"></i> Pricing Settings</h2></div>
+                <div class="form-group"><label>Deposit Percentage (%)</label><input type="number" id="depositPercent" value="20" class="w-100"></div>
+                <div class="form-group"><label>Late Return Fee ($/hour)</label><input type="number" id="lateFee" value="10" class="w-100"></div>
+                <button class="btn-primary" onclick="alert('Pricing settings saved!')">Save Changes</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'admin') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Admin';
+        document.getElementById('generalForm').addEventListener('submit', (e) => { e.preventDefault(); alert('Settings saved successfully!'); });
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+    </script>
+</body>
+</html>

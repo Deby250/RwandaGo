@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Trip | Tourist Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .active-trip-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .trip-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .trip-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .trip-info-item i {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 8px;
+            margin-top: 1rem;
+        }
+        .progress-fill {
+            background: var(--secondary);
+            height: 100%;
+            border-radius: 10px;
+            width: 40%;
+        }
+        .itinerary-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .itinerary-time {
+            min-width: 80px;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        .status-completed { color: #27ae60; }
+        .status-upcoming { color: #f39c12; }
+        .status-inprogress { color: #3498db; }
+        .emergency-contacts {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .emergency-card {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .emergency-card i {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        .vehicle-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .vehicle-spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Tourist Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="bookings.html"><i class="fas fa-calendar-check"></i> My Bookings</a>
+                <a href="new-booking.html"><i class="fas fa-plus-circle"></i> New Booking</a>
+                <a href="active-trip.html" class="active"><i class="fas fa-map-marked-alt"></i> Active Trip</a>
+                <a href="tours.html"><i class="fas fa-umbrella-beach"></i> Tour Packages</a>
+                <a href="profile.html"><i class="fas fa-user"></i> My Profile</a>
+                <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Active Trip</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <img src="https://randomuser.me/api/portraits/men/1.jpg" class="user-avatar">
+                        <span class="user-name" id="userName">Loading...</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                            <a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a>
+                            <hr>
+                            <a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Trip Card -->
+            <div class="active-trip-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2><i class="fas fa-car"></i> Toyota RAV4</h2>
+                    <span class="status-badge status-active">Active</span>
+                </div>
+                <div class="trip-info-grid">
+                    <div class="trip-info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <small>Pickup</small>
+                            <div><strong>Dec 1, 2024 - 10:00 AM</strong></div>
+                        </div>
+                    </div>
+                    <div class="trip-info-item">
+                        <i class="fas fa-calendar-check"></i>
+                        <div>
+                            <small>Return</small>
+                            <div><strong>Dec 5, 2024 - 10:00 AM</strong></div>
+                        </div>
+                    </div>
+                    <div class="trip-info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <small>Location</small>
+                            <div><strong>Kigali Airport</strong></div>
+                        </div>
+                    </div>
+                    <div class="trip-info-item">
+                        <i class="fas fa-id-card"></i>
+                        <div>
+                            <small>Plate Number</small>
+                            <div><strong>RAB 123A</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="trip-info-item" style="margin-top: 0.5rem;">
+                    <small>Trip Progress: 2 of 5 days completed</small>
+                </div>
+            </div>
+
+            <!-- Emergency Contacts -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-ambulance"></i> Emergency Contacts</h2>
+                </div>
+                <div class="emergency-contacts">
+                    <div class="emergency-card">
+                        <i class="fas fa-phone"></i>
+                        <h4>Police</h4>
+                        <a href="tel:112" style="font-size: 1.2rem; font-weight: bold;">112</a>
+                    </div>
+                    <div class="emergency-card">
+                        <i class="fas fa-car"></i>
+                        <h4>Roadside Assistance</h4>
+                        <a href="tel:+250788123456" style="font-size: 0.9rem;">+250 788 123 456</a>
+                    </div>
+                    <div class="emergency-card">
+                        <i class="fab fa-whatsapp"></i>
+                        <h4>WhatsApp Support</h4>
+                        <a href="https://wa.me/250788123456" style="font-size: 0.9rem;">+250 788 123 456</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trip Itinerary -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-route"></i> Trip Itinerary</h2>
+                    <button class="btn-sm btn-outline" id="downloadBtn"><i class="fas fa-download"></i> Download</button>
+                </div>
+                <div class="itinerary-item">
+                    <div class="itinerary-time">Day 1</div>
+                    <div>
+                        <h4>Arrival & Pickup</h4>
+                        <p>Vehicle handover at Kigali Airport, document verification</p>
+                        <span class="status-completed"><i class="fas fa-check-circle"></i> Completed</span>
+                    </div>
+                </div>
+                <div class="itinerary-item">
+                    <div class="itinerary-time">Day 2</div>
+                    <div>
+                        <h4>Kigali City Tour</h4>
+                        <p>Explore Kigali Genocide Memorial, local markets</p>
+                        <span class="status-inprogress"><i class="fas fa-play-circle"></i> In Progress</span>
+                    </div>
+                </div>
+                <div class="itinerary-item">
+                    <div class="itinerary-time">Day 3</div>
+                    <div>
+                        <h4>Drive to Volcanoes National Park</h4>
+                        <p>Scenic drive through the countryside</p>
+                        <span class="status-upcoming"><i class="fas fa-clock"></i> Upcoming</span>
+                    </div>
+                </div>
+                <div class="itinerary-item">
+                    <div class="itinerary-time">Day 4</div>
+                    <div>
+                        <h4>Gorilla Trekking</h4>
+                        <p>Full day adventure in the mountains</p>
+                        <span class="status-upcoming"><i class="fas fa-clock"></i> Upcoming</span>
+                    </div>
+                </div>
+                <div class="itinerary-item">
+                    <div class="itinerary-time">Day 5</div>
+                    <div>
+                        <h4>Return to Kigali</h4>
+                        <p>Drive back, vehicle return</p>
+                        <span class="status-upcoming"><i class="fas fa-clock"></i> Upcoming</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Information -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-info-circle"></i> Vehicle Information</h2>
+                </div>
+                <div class="vehicle-info-grid">
+                    <div class="vehicle-spec-item"><i class="fas fa-car"></i><div><strong>Make & Model</strong><br>Toyota RAV4</div></div>
+                    <div class="vehicle-spec-item"><i class="fas fa-calendar"></i><div><strong>Year</strong><br>2023</div></div>
+                    <div class="vehicle-spec-item"><i class="fas fa-cog"></i><div><strong>Transmission</strong><br>Automatic</div></div>
+                    <div class="vehicle-spec-item"><i class="fas fa-gas-pump"></i><div><strong>Fuel Type</strong><br>Petrol</div></div>
+                    <div class="vehicle-spec-item"><i class="fas fa-tachometer-alt"></i><div><strong>Mileage</strong><br>15,234 km</div></div>
+                    <div class="vehicle-spec-item"><i class="fas fa-tint"></i><div><strong>Fuel Level</strong><br>75%</div></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'tourist') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Tourist';
+
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+        document.getElementById('downloadBtn').addEventListener('click', () => alert('Downloading itinerary...'));
+    </script>
+</body>
+</html>

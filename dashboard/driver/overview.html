@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Overview | Driver Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/main.css">
+<link rel="stylesheet" href="../../assets/css/dashboard.css">
+</head>
+<body>
+<button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+<div class="dashboard-container">
+<aside class="sidebar" id="sidebar"><div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Driver Portal</p></div>
+<nav class="sidebar-nav"><a href="overview.html" class="active"><i class="fas fa-tachometer-alt"></i> Overview</a><a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a><a href="routes.html"><i class="fas fa-route"></i> Routes</a><a href="earnings.html"><i class="fas fa-money-bill"></i> Earnings</a><a href="vehicle.html"><i class="fas fa-car"></i> My Vehicle</a><a href="profile.html"><i class="fas fa-user"></i> Profile</a><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></nav></aside>
+<main class="main-content"><div class="top-bar"><h1>Driver Dashboard</h1><div class="user-info"><div class="user-dropdown" id="userDropdown"><i class="fas fa-user-circle" style="font-size:2rem"></i><span class="user-name" id="userName">Driver</span><i class="fas fa-chevron-down"></i><div class="dropdown-menu"><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div></div></div></div>
+<div class="stats-grid"><div class="stat-card"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-info"><h3>$450</h3><p>This Week</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-tasks"></i></div><div class="stat-info"><h3>3</h3><p>Today's Trips</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3>45</h3><p>Completed Trips</p></div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-star"></i></div><div class="stat-info"><h3>4.9</h3><p>Rating</p></div></div></div>
+<div class="card"><div class="card-header"><h2>Today's Assignments</h2></div><div class="table-responsive"><table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>Pickup</th><th>Destination</th><th>Status</th></tr></thead><tbody><tr><td>09:00 AM</td><td>Sarah Chen</td><td>Kigali Marriott</td><td>Volcanoes NP</td><td><span class="status-badge status-active">Upcoming</span></td></tr><tr><td>02:00 PM</td><td>John Doe</td><td>Hotel des Mille Collines</td><td>Kigali Airport</td><td><span class="status-badge status-active">Upcoming</span></td></tr></tbody></table></div></div></main></div>
+<script src="../../assets/js/core/session.js"></script>
+<script>
+const user = session.getCurrentUser();
+if (!user || user.role !== 'driver') window.location.href = '../../login.html';
+document.getElementById('userName').textContent = user.name || 'Driver';
+document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+</script>
+</body>
+</html>

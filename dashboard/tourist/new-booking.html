@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Booking | Tourist Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .price-summary {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .price-details {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .price-details.total {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .checkbox input {
+            width: auto;
+        }
+        .vehicle-card {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .vehicle-card.selected {
+            border: 2px solid var(--secondary);
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Tourist Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="bookings.html"><i class="fas fa-calendar-check"></i> My Bookings</a>
+                <a href="new-booking.html" class="active"><i class="fas fa-plus-circle"></i> New Booking</a>
+                <a href="active-trip.html"><i class="fas fa-map-marked-alt"></i> Active Trip</a>
+                <a href="tours.html"><i class="fas fa-umbrella-beach"></i> Tour Packages</a>
+                <a href="profile.html"><i class="fas fa-user"></i> My Profile</a>
+                <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>New Booking</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <img src="https://randomuser.me/api/portraits/men/1.jpg" class="user-avatar">
+                        <span class="user-name" id="userName">Loading...</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                            <a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a>
+                            <hr>
+                            <a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-car"></i> Book a Vehicle</h2>
+                </div>
+                
+                <form id="bookingForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-alt"></i> Pickup Date & Time *</label>
+                            <input type="datetime-local" id="pickupDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-check"></i> Return Date & Time *</label>
+                            <input type="datetime-local" id="returnDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-map-marker-alt"></i> Pickup Location *</label>
+                            <select id="pickupLocation" required>
+                                <option value="">Select pickup location</option>
+                                <option value="Kigali Airport">Kigali International Airport</option>
+                                <option value="Downtown Kigali">Downtown Kigali</option>
+                                <option value="Hotel des Mille Collines">Hotel des Mille Collines</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-map-marker-alt"></i> Return Location *</label>
+                            <select id="returnLocation" required>
+                                <option value="">Select return location</option>
+                                <option value="Kigali Airport">Kigali International Airport</option>
+                                <option value="Downtown Kigali">Downtown Kigali</option>
+                                <option value="Hotel des Mille Collines">Hotel des Mille Collines</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-car"></i> Select Vehicle *</label>
+                        <div class="vehicles-grid" id="vehiclesGrid"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-concierge-bell"></i> Additional Services</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox">
+                                <input type="checkbox" class="extra" data-price="10"> GPS Navigation ($10/day)
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" class="extra" data-price="50"> Professional Guide ($50/day)
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" class="extra" data-price="15"> Premium Insurance ($15/day)
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" class="extra" data-price="5"> Child Seat ($5/day)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-sticky-note"></i> Special Requests</label>
+                        <textarea id="specialRequests" rows="3" placeholder="Any special requests or notes..."></textarea>
+                    </div>
+
+                    <div class="price-summary" id="priceSummary">
+                        <h3>Price Summary</h3>
+                        <div class="price-details">
+                            <span>Car Rental:</span>
+                            <span id="carPrice">$0</span>
+                        </div>
+                        <div id="extrasSummary"></div>
+                        <div class="price-details total">
+                            <strong>Total:</strong>
+                            <strong id="totalPrice">$0</strong>
+                        </div>
+                        <div class="price-details">
+                            <span>Deposit (20%):</span>
+                            <span id="depositAmount">$0</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="submitBtn">Proceed to Payment <i class="fas fa-arrow-right"></i></button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        const vehicles = [
+            { id: 1, name: 'Toyota RAV4', category: 'SUV', seats: 5, price: 55, image: '🚙', available: true },
+            { id: 2, name: 'Suzuki Jimny', category: 'SUV', seats: 4, price: 45, image: '🚘', available: true },
+            { id: 3, name: 'Mitsubishi Pajero', category: 'SUV', seats: 7, price: 85, image: '🚐', available: true },
+            { id: 4, name: 'Hyundai i10', category: 'Economy', seats: 4, price: 30, image: '🚗', available: true },
+            { id: 5, name: 'Toyota Camry', category: 'Sedan', seats: 5, price: 65, image: '🚙', available: true }
+        ];
+
+        let selectedVehicle = null;
+        let pickupDate = null;
+        let returnDate = null;
+
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'tourist') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Tourist';
+
+        function loadVehicles() {
+            const grid = document.getElementById('vehiclesGrid');
+            grid.innerHTML = vehicles.map(v => `
+                <div class="vehicle-card card" data-id="${v.id}" style="cursor:pointer; margin-bottom:0.5rem;">
+                    <div class="vehicle-image" style="height:80px; font-size:2rem;">${v.image}</div>
+                    <div class="vehicle-info">
+                        <h4>${v.name}</h4>
+                        <div class="vehicle-specs">
+                            <span><i class="fas fa-users"></i> ${v.seats} seats</span>
+                            <span><i class="fas fa-dollar-sign"></i> $${v.price}/day</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.vehicle-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    const id = parseInt(card.dataset.id);
+                    selectedVehicle = vehicles.find(v => v.id === id);
+                    calculatePrice();
+                });
+            });
+        }
+
+        function calculatePrice() {
+            pickupDate = document.getElementById('pickupDate').value;
+            returnDate = document.getElementById('returnDate').value;
+            
+            if (!selectedVehicle || !pickupDate || !returnDate) return;
+            
+            const start = new Date(pickupDate);
+            const end = new Date(returnDate);
+            const days = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
+            
+            const carTotal = selectedVehicle.price * days;
+            
+            let extrasTotal = 0;
+            document.querySelectorAll('.extra:checked').forEach(extra => {
+                extrasTotal += parseInt(extra.dataset.price) * days;
+            });
+            
+            const total = carTotal + extrasTotal;
+            const deposit = total * 0.2;
+            
+            document.getElementById('carPrice').textContent = `$${carTotal}`;
+            document.getElementById('totalPrice').textContent = `$${total}`;
+            document.getElementById('depositAmount').textContent = `$${deposit.toFixed(2)}`;
+            
+            let extrasHtml = '';
+            document.querySelectorAll('.extra:checked').forEach(extra => {
+                const name = extra.parentElement.textContent.split('(')[0].trim();
+                const price = parseInt(extra.dataset.price) * days;
+                extrasHtml += `<div class="price-details"><span>${name}</span><span>$${price}</span></div>`;
+            });
+            document.getElementById('extrasSummary').innerHTML = extrasHtml;
+        }
+
+        document.getElementById('pickupDate').addEventListener('change', calculatePrice);
+        document.getElementById('returnDate').addEventListener('change', calculatePrice);
+        document.querySelectorAll('.extra').forEach(extra => {
+            extra.addEventListener('change', calculatePrice);
+        });
+
+        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (!selectedVehicle) {
+                alert('Please select a vehicle');
+                return;
+            }
+            
+            if (!document.getElementById('pickupDate').value || !document.getElementById('returnDate').value) {
+                alert('Please select pickup and return dates');
+                return;
+            }
+            
+            alert('Booking created! Redirecting to payment...');
+            window.location.href = '../../payment.html';
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+
+        loadVehicles();
+    </script>
+</body>
+</html>

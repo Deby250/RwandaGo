@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Earnings | Driver Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: white; padding: 1rem; border-radius: 12px; text-align: center; }
+        .stat-card i { font-size: 2rem; color: var(--secondary); }
+        .stat-card h3 { font-size: 1.5rem; margin: 0.5rem 0; }
+        .transaction-item { display: flex; justify-content: space-between; padding: 1rem; border-bottom: 1px solid #e0e0e0; }
+        .transaction-amount { font-weight: bold; color: var(--secondary); }
+        .btn-withdraw { background: var(--secondary); color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Driver Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a>
+                <a href="routes.html"><i class="fas fa-route"></i> Routes</a>
+                <a href="earnings.html" class="active"><i class="fas fa-money-bill"></i> Earnings</a>
+                <a href="vehicle.html"><i class="fas fa-car"></i> My Vehicle</a>
+                <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>My Earnings</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Driver</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu"><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><i class="fas fa-dollar-sign"></i><h3>$1,250</h3><p>Total Earnings</p></div>
+                <div class="stat-card"><i class="fas fa-calendar-week"></i><h3>$450</h3><p>This Week</p></div>
+                <div class="stat-card"><i class="fas fa-clock"></i><h3>45</h3><p>Trips Completed</p></div>
+                <div class="stat-card"><i class="fas fa-star"></i><h3>4.9</h3><p>Rating</p></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-history"></i> Payment History</h2></div>
+                <div class="transaction-item"><div><strong>Dec 1, 2024</strong><br>Trip: Kigali → Volcanoes NP</div><div class="transaction-amount">+$150</div></div>
+                <div class="transaction-item"><div><strong>Nov 28, 2024</strong><br>Trip: Hotel → Airport</div><div class="transaction-amount">+$75</div></div>
+                <div class="transaction-item"><div><strong>Nov 25, 2024</strong><br>Trip: Kigali → Lake Kivu</div><div class="transaction-amount">+$200</div></div>
+                <button class="btn-withdraw" onclick="alert('Withdrawal request submitted')"><i class="fas fa-money-bill-wave"></i> Withdraw Earnings</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'driver') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Driver';
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+    </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat | Support Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .chat-container { display: flex; gap: 1rem; height: 70vh; }
+        .chat-sidebar { width: 300px; background: white; border-radius: 12px; overflow-y: auto; }
+        .chat-user { padding: 1rem; border-bottom: 1px solid #e0e0e0; cursor: pointer; transition: background 0.3s; }
+        .chat-user:hover, .chat-user.active { background: #f8f9fa; }
+        .chat-user-name { font-weight: 600; }
+        .chat-user-status { font-size: 0.75rem; color: #27ae60; }
+        .chat-main { flex: 1; background: white; border-radius: 12px; display: flex; flex-direction: column; }
+        .chat-header { padding: 1rem; border-bottom: 1px solid #e0e0e0; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; }
+        .message { margin-bottom: 1rem; display: flex; }
+        .message.customer { justify-content: flex-start; }
+        .message.agent { justify-content: flex-end; }
+        .message-bubble { max-width: 70%; padding: 0.75rem; border-radius: 12px; }
+        .message.customer .message-bubble { background: #f8f9fa; color: #333; }
+        .message.agent .message-bubble { background: var(--secondary); color: white; }
+        .chat-input { padding: 1rem; border-top: 1px solid #e0e0e0; display: flex; gap: 0.5rem; }
+        .chat-input input { flex: 1; padding: 0.5rem; border: 1px solid #e0e0e0; border-radius: 8px; }
+        .chat-input button { background: var(--secondary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
+        .online { color: #27ae60; }
+        .offline { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Support Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="tickets.html"><i class="fas fa-ticket-alt"></i> Tickets</a>
+                <a href="chat.html" class="active"><i class="fas fa-comments"></i> Live Chat</a>
+                <a href="emergency.html"><i class="fas fa-ambulance"></i> Emergency</a>
+                <a href="customers.html"><i class="fas fa-users"></i> Customers</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Live Chat</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Support</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu"><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-sidebar" id="chatSidebar">
+                    <div class="chat-user active" data-user="john">
+                        <div class="chat-user-name">John Doe</div>
+                        <div class="chat-user-status online"><i class="fas fa-circle"></i> Online</div>
+                    </div>
+                    <div class="chat-user" data-user="sarah">
+                        <div class="chat-user-name">Sarah Chen</div>
+                        <div class="chat-user-status online"><i class="fas fa-circle"></i> Online</div>
+                    </div>
+                    <div class="chat-user" data-user="maria">
+                        <div class="chat-user-name">Maria Garcia</div>
+                        <div class="chat-user-status offline"><i class="fas fa-circle"></i> Offline</div>
+                    </div>
+                </div>
+
+                <div class="chat-main">
+                    <div class="chat-header">
+                        <h3 id="currentChatUser">John Doe</h3>
+                        <span class="online"><i class="fas fa-circle"></i> Online</span>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message customer"><div class="message-bubble">Hello, I need help with my booking</div></div>
+                        <div class="message agent"><div class="message-bubble">Hi John! How can I help you today?</div></div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Type your message...">
+                        <button id="sendBtn"><i class="fas fa-paper-plane"></i> Send</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'support') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Support';
+
+        document.querySelectorAll('.chat-user').forEach(user => {
+            user.addEventListener('click', () => {
+                document.querySelectorAll('.chat-user').forEach(u => u.classList.remove('active'));
+                user.classList.add('active');
+                document.getElementById('currentChatUser').textContent = user.querySelector('.chat-user-name').textContent;
+            });
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            const input = document.getElementById('chatInput');
+            if (input.value.trim()) {
+                const messagesDiv = document.getElementById('chatMessages');
+                const newMessage = document.createElement('div');
+                newMessage.className = 'message agent';
+                newMessage.innerHTML = `<div class="message-bubble">${input.value}</div>`;
+                messagesDiv.appendChild(newMessage);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                input.value = '';
+            }
+        });
+
+        document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('sendBtn').click(); });
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+    </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Bookings | Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .filter-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .filter-chip.active { background: var(--secondary); color: white; }
+        .booking-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d1ecf1; color: #0c5460; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .action-btn { padding: 4px 8px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.75rem; margin: 0 2px; }
+        .btn-view { background: var(--secondary); color: white; }
+        .btn-update { background: #17a2b8; color: white; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header { padding: 1rem; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 1rem; }
+        .modal-footer { padding: 1rem; border-top: 1px solid #e0e0e0; display: flex; justify-content: flex-end; gap: 0.5rem; }
+        .close { cursor: pointer; font-size: 1.5rem; }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Admin Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="vehicles.html"><i class="fas fa-car"></i> Vehicles</a>
+                <a href="bookings.html" class="active"><i class="fas fa-calendar-check"></i> Bookings</a>
+                <a href="customers.html"><i class="fas fa-users"></i> Customers</a>
+                <a href="reports.html"><i class="fas fa-chart-line"></i> Reports</a>
+                <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Manage Bookings</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu"><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-calendar-check"></i> All Bookings</h2></div>
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <button class="filter-chip active" data-filter="all">All</button>
+                        <button class="filter-chip" data-filter="active">Active</button>
+                        <button class="filter-chip" data-filter="pending">Pending</button>
+                        <button class="filter-chip" data-filter="completed">Completed</button>
+                        <button class="filter-chip" data-filter="cancelled">Cancelled</button>
+                    </div>
+                    <div class="search-bar"><input type="text" id="searchBookings" placeholder="Search..."><i class="fas fa-search"></i></div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead><tr><th>ID</th><th>Customer</th><th>Vehicle</th><th>Dates</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="bookingsList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Update Booking Status</h3><span class="close">&times;</span></div>
+            <div class="modal-body">
+                <p><strong>Booking ID:</strong> <span id="modalBookingId"></span></p>
+                <div class="form-group"><label>Status</label><select id="updateStatus" class="w-100"><option value="pending">Pending</option><option value="active">Active</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></div>
+            </div>
+            <div class="modal-footer"><button class="btn-secondary modal-close">Cancel</button><button class="btn-primary" id="updateStatusBtn">Update</button></div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        let bookings = [
+            { id: 'BK001', customer: 'John Doe', vehicle: 'Toyota RAV4', startDate: 'Dec 1, 2024', endDate: 'Dec 5, 2024', amount: 275, status: 'active' },
+            { id: 'BK002', customer: 'Sarah Chen', vehicle: 'Suzuki Jimny', startDate: 'Nov 15, 2024', endDate: 'Nov 18, 2024', amount: 135, status: 'completed' },
+            { id: 'BK003', customer: 'Maria Garcia', vehicle: 'Mitsubishi Pajero', startDate: 'Dec 10, 2024', endDate: 'Dec 15, 2024', amount: 425, status: 'pending' }
+        ];
+        let currentFilter = 'all', currentSearch = '';
+
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'admin') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Admin';
+
+        function loadBookings() {
+            let filtered = [...bookings];
+            if (currentFilter !== 'all') filtered = filtered.filter(b => b.status === currentFilter);
+            if (currentSearch) filtered = filtered.filter(b => b.id.toLowerCase().includes(currentSearch.toLowerCase()) || b.customer.toLowerCase().includes(currentSearch.toLowerCase()));
+            displayBookings(filtered);
+        }
+
+        function displayBookings(bookingsList) {
+            const tbody = document.getElementById('bookingsList');
+            if (bookingsList.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center">No bookings found</td></tr>'; return; }
+            tbody.innerHTML = bookingsList.map(b => `
+                <tr><td>${b.id}</td><td>${b.customer}</td><td>${b.vehicle}</td><td>${b.startDate} - ${b.endDate}</td><td>$${b.amount}</td>
+                <td><span class="booking-status status-${b.status}">${b.status}</span></td>
+                <td><button class="action-btn btn-view" onclick="viewBooking('${b.id}')">View</button><button class="action-btn btn-update" onclick="updateBooking('${b.id}')">Update</button></td></tr>
+            `).join('');
+        }
+
+        function viewBooking(id) { alert(`Viewing booking ${id} details`); }
+        function updateBooking(id) {
+            const booking = bookings.find(b => b.id === id);
+            document.getElementById('modalBookingId').textContent = id;
+            document.getElementById('updateStatus').value = booking.status;
+            document.getElementById('bookingModal').style.display = 'flex';
+            window.currentUpdateId = id;
+        }
+
+        document.getElementById('updateStatusBtn').addEventListener('click', () => {
+            const booking = bookings.find(b => b.id === window.currentUpdateId);
+            if (booking) { booking.status = document.getElementById('updateStatus').value; loadBookings(); alert('Status updated'); document.getElementById('bookingModal').style.display = 'none'; }
+        });
+
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active'); currentFilter = chip.dataset.filter; loadBookings();
+            });
+        });
+        document.getElementById('searchBookings').addEventListener('input', (e) => { currentSearch = e.target.value; loadBookings(); });
+        document.querySelectorAll('.close, .modal-close').forEach(el => { el.addEventListener('click', () => document.getElementById('bookingModal').style.display = 'none'); });
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+        loadBookings();
+    </script>
+</body>
+</html>

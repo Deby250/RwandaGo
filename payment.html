@@ -1,0 +1,16 @@
+<!-- payment.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Secure Payment | RwandaGo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/main.css">
+<style>body{background:#f8f9fa;min-height:100vh;padding:40px 20px}.payment-container{max-width:500px;margin:0 auto}.payment-card{background:white;border-radius:24px;padding:2rem;box-shadow:0 10px 30px rgba(0,0,0,0.1)}.payment-header{text-align:center;margin-bottom:2rem}.payment-header i{font-size:3rem;color:#e67e22;margin-bottom:1rem}.amount{text-align:center;font-size:2rem;font-weight:800;color:#0a3b2f;margin:1rem 0}.card-row{display:flex;gap:1rem}.btn-pay{width:100%;background:#27ae60;color:white;border:none;padding:1rem;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;margin-top:1rem}.secure-badge{text-align:center;margin-top:1.5rem;color:#6c757d;font-size:0.85rem}</style>
+</head>
+<body>
+<div class="payment-container"><div class="payment-card"><div class="payment-header"><i class="fas fa-lock"></i><h2>Secure Payment</h2><div class="amount">$55.00</div><p style="color:#6c757d">20% deposit for Toyota RAV4</p></div>
+<form id="paymentForm"><div class="form-group"><label>Cardholder Name</label><input type="text" placeholder="John Doe" required></div><div class="form-group"><label>Card Number</label><input type="text" placeholder="1234 5678 9012 3456" required></div><div class="card-row"><div class="form-group"><label>Expiry Date</label><input type="text" placeholder="MM/YY" required></div><div class="form-group"><label>CVV</label><input type="text" placeholder="123" required></div></div><button type="submit" class="btn-pay"><i class="fas fa-credit-card"></i> Pay $55.00</button></form>
+<div class="secure-badge"><i class="fas fa-shield-alt"></i> Secured by SSL Encryption</div></div></div>
+<script>document.getElementById('paymentForm').addEventListener('submit',(e)=>{e.preventDefault();window.location.href='payment-success.html';});</script>
+</body>
+</html>

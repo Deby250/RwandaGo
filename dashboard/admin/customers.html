@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Customers | Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .search-bar { position: relative; margin-bottom: 1rem; }
+        .search-bar input { padding: 0.5rem 2rem 0.5rem 1rem; border: 1px solid #e0e0e0; border-radius: 20px; width: 100%; }
+        .search-bar i { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #999; }
+        .user-status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-inactive { background: #f8d7da; color: #721c24; }
+        .action-btn { padding: 4px 8px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.75rem; margin: 0 2px; }
+        .btn-edit { background: var(--secondary); color: white; }
+        .btn-block { background: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Admin Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="vehicles.html"><i class="fas fa-car"></i> Vehicles</a>
+                <a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a>
+                <a href="customers.html" class="active"><i class="fas fa-users"></i> Customers</a>
+                <a href="reports.html"><i class="fas fa-chart-line"></i> Reports</a>
+                <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Customer Management</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu"><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-users"></i> Registered Customers</h2></div>
+                <div class="search-bar"><input type="text" id="searchCustomer" placeholder="Search by name or email..."><i class="fas fa-search"></i></div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="customersList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        let customers = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', phone: '+250788123456', role: 'tourist', status: 'active', totalBookings: 3 },
+            { id: 2, name: 'Sarah Chen', email: 'sarah@example.com', phone: '+250788123457', role: 'tourist', status: 'active', totalBookings: 2 },
+            { id: 3, name: 'Maria Garcia', email: 'maria@example.com', phone: '+250788123458', role: 'tourist', status: 'inactive', totalBookings: 1 }
+        ];
+        let currentSearch = '';
+
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'admin') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Admin';
+
+        function loadCustomers() {
+            let filtered = [...customers];
+            if (currentSearch) filtered = filtered.filter(c => c.name.toLowerCase().includes(currentSearch.toLowerCase()) || c.email.toLowerCase().includes(currentSearch.toLowerCase()));
+            displayCustomers(filtered);
+        }
+
+        function displayCustomers(customersList) {
+            const tbody = document.getElementById('customersList');
+            if (customersList.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="text-center">No customers found</td></tr>'; return; }
+            tbody.innerHTML = customersList.map(c => `
+                <tr><td>${c.id}</td><td>${c.name}</td><td>${c.email}</td><td>${c.phone}</td><td>${c.role}</td>
+                <td><span class="user-status status-${c.status}">${c.status}</span></td>
+                <td><button class="action-btn btn-edit" onclick="editCustomer(${c.id})">Edit</button><button class="action-btn btn-block" onclick="toggleStatus(${c.id})">${c.status === 'active' ? 'Block' : 'Activate'}</button></td></tr>
+            `).join('');
+        }
+
+        function editCustomer(id) { alert(`Edit customer ${id} - Feature coming soon`); }
+        function toggleStatus(id) {
+            const customer = customers.find(c => c.id === id);
+            if (customer) { customer.status = customer.status === 'active' ? 'inactive' : 'active'; loadCustomers(); alert(`Customer ${customer.status === 'active' ? 'activated' : 'blocked'} successfully`); }
+        }
+
+        document.getElementById('searchCustomer').addEventListener('input', (e) => { currentSearch = e.target.value; loadCustomers(); });
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+        loadCustomers();
+    </script>
+</body>
+</html>

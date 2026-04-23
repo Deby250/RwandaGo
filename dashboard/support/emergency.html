@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Calls | Support Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: white; padding: 1rem; border-radius: 12px; text-align: center; }
+        .stat-card i { font-size: 2rem; color: var(--secondary); }
+        .stat-card h3 { font-size: 1.5rem; margin: 0.5rem 0; }
+        .emergency-list { margin-top: 1rem; }
+        .emergency-item { background: #f8f9fa; padding: 1rem; border-radius: 12px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .emergency-priority { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .priority-critical { background: #dc3545; color: white; }
+        .priority-high { background: #f39c12; color: white; }
+        .btn-call { background: #28a745; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
+        .btn-resolve { background: var(--secondary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Support Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="tickets.html"><i class="fas fa-ticket-alt"></i> Tickets</a>
+                <a href="chat.html"><i class="fas fa-comments"></i> Live Chat</a>
+                <a href="emergency.html" class="active"><i class="fas fa-ambulance"></i> Emergency</a>
+                <a href="customers.html"><i class="fas fa-users"></i> Customers</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>Emergency Response</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Support</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu"><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><i class="fas fa-ambulance"></i><h3>3</h3><p>Active Emergencies</p></div>
+                <div class="stat-card"><i class="fas fa-clock"></i><h3>2.5 min</h3><p>Avg Response</p></div>
+                <div class="stat-card"><i class="fas fa-check-circle"></i><h3>98%</h3><p>Resolution Rate</p></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-exclamation-triangle"></i> Active Emergency Calls</h2></div>
+                <div class="emergency-list">
+                    <div class="emergency-item"><div><strong>John Doe</strong><br><small>Accident on Road</small></div><div><span class="emergency-priority priority-critical">CRITICAL</span></div><div><button class="btn-call" onclick="alert('Calling John Doe...')"><i class="fas fa-phone"></i> Call</button> <button class="btn-resolve" onclick="alert('Emergency resolved')">Resolve</button></div></div>
+                    <div class="emergency-item"><div><strong>Sarah Chen</strong><br><small>Vehicle Breakdown</small></div><div><span class="emergency-priority priority-high">HIGH</span></div><div><button class="btn-call" onclick="alert('Calling Sarah Chen...')"><i class="fas fa-phone"></i> Call</button> <button class="btn-resolve" onclick="alert('Emergency resolved')">Resolve</button></div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-history"></i> Recent Emergency History</h2></div>
+                <div class="table-responsive">
+                    <table class="data-table"><thead><tr><th>Time</th><th>Customer</th><th>Issue</th><th>Status</th></tr></thead><tbody><tr><td>2 hours ago</td><td>Maria Garcia</td><td>Flat Tire</td><td>Resolved</td></tr></tbody></table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'support') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Support';
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+    </script>
+</body>
+</html>

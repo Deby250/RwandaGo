@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Driver Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .profile-avatar { text-align: center; margin-bottom: 2rem; }
+        .profile-avatar img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--secondary); }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Driver Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="assignments.html"><i class="fas fa-tasks"></i> Assignments</a>
+                <a href="routes.html"><i class="fas fa-route"></i> Routes</a>
+                <a href="earnings.html"><i class="fas fa-money-bill"></i> Earnings</a>
+                <a href="vehicle.html"><i class="fas fa-car"></i> My Vehicle</a>
+                <a href="profile.html" class="active"><i class="fas fa-user"></i> Profile</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>My Profile</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+                        <span class="user-name" id="userName">Driver</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu"><a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h2><i class="fas fa-user"></i> Personal Information</h2><button class="btn-sm btn-outline" id="editBtn">Edit Profile</button></div>
+                <div class="profile-avatar"><img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile"></div>
+                <form id="profileForm">
+                    <div class="form-row"><div class="form-group"><label>First Name</label><input type="text" id="firstName" value="John" readonly></div><div class="form-group"><label>Last Name</label><input type="text" id="lastName" value="Doe" readonly></div></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="email" value="driver@rwandago.com" readonly></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="phone" value="+250788123456" readonly></div>
+                    <div class="form-group"><label>License Number</label><input type="text" id="license" value="DL12345678" readonly></div>
+                    <div class="form-actions" id="formActions" style="display: none;"><button type="button" class="btn-secondary" id="cancelBtn">Cancel</button><button type="submit" class="btn-primary">Save Changes</button></div>
+                </form>
+            </div>
+
+            <div class="card"><div class="card-header"><h2><i class="fas fa-key"></i> Change Password</h2></div>
+                <form id="passwordForm"><div class="form-group"><label>Current Password</label><input type="password" id="currentPassword" required></div><div class="form-group"><label>New Password</label><input type="password" id="newPassword" required></div><div class="form-group"><label>Confirm Password</label><input type="password" id="confirmPassword" required></div><button type="submit" class="btn-primary">Update Password</button></form>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'driver') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Driver';
+
+        let isEditing = false;
+        document.getElementById('editBtn').addEventListener('click', () => { isEditing = true; document.querySelectorAll('#profileForm input').forEach(el => el.removeAttribute('readonly')); document.getElementById('formActions').style.display = 'flex'; document.getElementById('editBtn').style.display = 'none'; });
+        document.getElementById('cancelBtn').addEventListener('click', () => location.reload());
+        document.getElementById('profileForm').addEventListener('submit', (e) => { e.preventDefault(); alert('Profile updated successfully!'); isEditing = false; document.getElementById('formActions').style.display = 'none'; document.getElementById('editBtn').style.display = 'block'; });
+        document.getElementById('passwordForm').addEventListener('submit', (e) => { e.preventDefault(); const newPass = document.getElementById('newPassword').value, confirm = document.getElementById('confirmPassword').value; if (newPass !== confirm) alert('Passwords do not match'); else if (newPass.length < 6) alert('Password must be at least 6 characters'); else { alert('Password changed successfully!'); e.target.reset(); } });
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+    </script>
+</body>
+</html>

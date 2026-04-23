@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | Tourist Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+        }
+        .filter-chip.active, .filter-chip:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        .search-bar {
+            position: relative;
+        }
+        .search-bar input {
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            width: 250px;
+        }
+        .search-bar i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        .booking-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d1ecf1; color: #0c5460; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .action-btn {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin: 0 2px;
+        }
+        .btn-view { background: var(--secondary); color: white; }
+        .btn-cancel { background: #dc3545; color: white; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body { padding: 1rem; }
+        .modal-footer {
+            padding: 1rem;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+        .close { cursor: pointer; font-size: 1.5rem; }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .page-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><i class="fas fa-car"></i><h3>RwandaGo</h3><p>Tourist Portal</p></div>
+            <nav class="sidebar-nav">
+                <a href="overview.html"><i class="fas fa-tachometer-alt"></i> Overview</a>
+                <a href="bookings.html" class="active"><i class="fas fa-calendar-check"></i> My Bookings</a>
+                <a href="new-booking.html"><i class="fas fa-plus-circle"></i> New Booking</a>
+                <a href="active-trip.html"><i class="fas fa-map-marked-alt"></i> Active Trip</a>
+                <a href="tours.html"><i class="fas fa-umbrella-beach"></i> Tour Packages</a>
+                <a href="profile.html"><i class="fas fa-user"></i> My Profile</a>
+                <a href="support.html"><i class="fas fa-headset"></i> Support</a>
+                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <h1>My Bookings</h1>
+                <div class="user-info">
+                    <div class="user-dropdown" id="userDropdown">
+                        <img src="https://randomuser.me/api/portraits/men/1.jpg" class="user-avatar">
+                        <span class="user-name" id="userName">Loading...</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-menu">
+                            <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                            <a href="bookings.html"><i class="fas fa-calendar-check"></i> Bookings</a>
+                            <hr>
+                            <a href="#" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-calendar-check"></i> All Bookings</h2>
+                    <a href="new-booking.html" class="btn-sm btn-primary-sm">+ New Booking</a>
+                </div>
+                
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <button class="filter-chip active" data-filter="all">All</button>
+                        <button class="filter-chip" data-filter="active">Active</button>
+                        <button class="filter-chip" data-filter="pending">Pending</button>
+                        <button class="filter-chip" data-filter="completed">Completed</button>
+                        <button class="filter-chip" data-filter="cancelled">Cancelled</button>
+                    </div>
+                    <div class="search-bar">
+                        <input type="text" id="searchBookings" placeholder="Search bookings...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table" id="bookingsTable">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Vehicle</th>
+                                <th>Pickup Date</th>
+                                <th>Return Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsList">
+                            <tr><td colspan="7" class="text-center">Loading bookings...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Booking Details Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Booking Details</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn-sm btn-secondary modal-close">Close</button>
+                <button class="btn-sm btn-danger" id="cancelBookingBtn" style="display:none">Cancel Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/core/session.js"></script>
+    <script>
+        // Mock bookings data
+        let allBookings = [
+            { id: 'BK001', vehicle: 'Toyota RAV4', pickupDate: '2024-12-01 10:00', returnDate: '2024-12-05 10:00', amount: 275, status: 'active', paymentStatus: 'deposit_paid', pickupLocation: 'Kigali Airport', returnLocation: 'Kigali Airport' },
+            { id: 'BK002', vehicle: 'Suzuki Jimny', pickupDate: '2024-11-15 09:00', returnDate: '2024-11-18 09:00', amount: 135, status: 'completed', paymentStatus: 'fully_paid', pickupLocation: 'Downtown Kigali', returnLocation: 'Downtown Kigali' },
+            { id: 'BK003', vehicle: 'Mitsubishi Pajero', pickupDate: '2024-10-20 08:00', returnDate: '2024-10-25 18:00', amount: 425, status: 'completed', paymentStatus: 'fully_paid', pickupLocation: 'Kigali Airport', returnLocation: 'Kigali Airport' },
+            { id: 'BK004', vehicle: 'Hyundai i10', pickupDate: '2024-09-10 09:00', returnDate: '2024-09-12 09:00', amount: 90, status: 'cancelled', paymentStatus: 'refunded', pickupLocation: 'Hotel des Mille Collines', returnLocation: 'Hotel des Mille Collines' }
+        ];
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        const user = session.getCurrentUser();
+        if (!user || user.role !== 'tourist') window.location.href = '../../login.html';
+        document.getElementById('userName').textContent = user.name || 'Tourist';
+
+        function loadBookings() {
+            let filtered = [...allBookings];
+            
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(b => b.status === currentFilter);
+            }
+            
+            if (currentSearch) {
+                filtered = filtered.filter(b => 
+                    b.id.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    b.vehicle.toLowerCase().includes(currentSearch.toLowerCase())
+                );
+            }
+            
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage;
+            const paginated = filtered.slice(start, start + itemsPerPage);
+            
+            displayBookings(paginated);
+            displayPagination(totalPages);
+        }
+
+        function displayBookings(bookings) {
+            const tbody = document.getElementById('bookingsList');
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">No bookings found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = bookings.map(booking => `
+                <tr>
+                    <td>${booking.id}</td>
+                    <td>${booking.vehicle}</td>
+                    <td>${booking.pickupDate}</td>
+                    <td>${booking.returnDate}</td>
+                    <td>$${booking.amount}</td>
+                    <td><span class="booking-status status-${booking.status}">${booking.status}</span></td>
+                    <td>
+                        <button class="action-btn btn-view" onclick="viewBooking('${booking.id}')">View</button>
+                        ${booking.status === 'active' ? `<button class="action-btn btn-cancel" onclick="cancelBooking('${booking.id}')">Cancel</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function displayPagination(totalPages) {
+            const paginationDiv = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                paginationDiv.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            paginationDiv.innerHTML = html;
+        }
+
+        function viewBooking(id) {
+            const booking = allBookings.find(b => b.id === id);
+            if (!booking) return;
+            
+            const modal = document.getElementById('bookingModal');
+            const modalBody = document.getElementById('modalBody');
+            const cancelBtn = document.getElementById('cancelBookingBtn');
+            
+            modalBody.innerHTML = `
+                <div class="booking-detail">
+                    <p><strong>Booking ID:</strong> ${booking.id}</p>
+                    <p><strong>Vehicle:</strong> ${booking.vehicle}</p>
+                    <p><strong>Pickup Date:</strong> ${booking.pickupDate}</p>
+                    <p><strong>Return Date:</strong> ${booking.returnDate}</p>
+                    <p><strong>Pickup Location:</strong> ${booking.pickupLocation}</p>
+                    <p><strong>Return Location:</strong> ${booking.returnLocation}</p>
+                    <p><strong>Total Amount:</strong> $${booking.amount}</p>
+                    <p><strong>Status:</strong> <span class="booking-status status-${booking.status}">${booking.status}</span></p>
+                    <p><strong>Payment Status:</strong> ${booking.paymentStatus}</p>
+                </div>
+            `;
+            
+            if (booking.status === 'active') {
+                cancelBtn.style.display = 'block';
+                cancelBtn.onclick = () => confirmCancel(booking.id);
+            } else {
+                cancelBtn.style.display = 'none';
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function cancelBooking(id) {
+            const booking = allBookings.find(b => b.id === id);
+            if (booking && confirm(`Are you sure you want to cancel booking ${id}?`)) {
+                booking.status = 'cancelled';
+                booking.paymentStatus = 'refunded';
+                loadBookings();
+                showNotification(`Booking ${id} cancelled successfully`, 'success');
+                document.getElementById('bookingModal').style.display = 'none';
+            }
+        }
+
+        function confirmCancel(id) {
+            if (confirm('Are you sure you want to cancel this booking?')) {
+                cancelBooking(id);
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            loadBookings();
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${message}</span>`;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.dataset.filter;
+                currentPage = 1;
+                loadBookings();
+            });
+        });
+
+        document.getElementById('searchBookings').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            currentPage = 1;
+            loadBookings();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('dropdownLogout').addEventListener('click', () => { session.clearSession(); window.location.href = '../../login.html'; });
+        document.getElementById('userDropdown').addEventListener('click', () => document.querySelector('.dropdown-menu').classList.toggle('show'));
+        document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+
+        // Modal close
+        document.querySelectorAll('.close, .modal-close').forEach(el => {
+            el.addEventListener('click', () => document.getElementById('bookingModal').style.display = 'none');
+        });
+
+        loadBookings();
+    </script>
+</body>
+</html>

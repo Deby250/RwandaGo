@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | RwandaGo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+     <link rel="stylesheet" href="assets/css/responsive.css">
+    <style>
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .navbar.scrolled {
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo i { color: var(--secondary); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--dark); font-weight: 500; transition: all 0.3s; }
+        .nav-links a:hover { color: var(--secondary); }
+        .btn-login { background: var(--secondary); color: white !important; padding: 0.5rem 1.5rem; border-radius: 50px; }
+        .mobile-menu { display: none; font-size: 1.5rem; cursor: pointer; }
+        body {
+            background: linear-gradient(135deg, #0a3b2f 0%, #06261e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .auth-container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .auth-header {
+            background: linear-gradient(135deg, #0a3b2f, #06261e);
+            padding: 2rem;
+            text-align: center;
+        }
+        .auth-header i {
+            font-size: 3rem;
+            color: #e67e22;
+            margin-bottom: 1rem;
+        }
+        .auth-header h1 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .auth-header p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+        .auth-body {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .alert {
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #dc2626;
+            border-left: 4px solid #dc2626;
+        }
+        .alert-success {
+            background: #dcfce7;
+            color: #16a34a;
+            border-left: 4px solid #16a34a;
+        }
+        @media (max-width: 480px) {
+            .form-row { grid-template-columns: 1fr; gap: 0; }
+            .auth-body { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+        <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <a href="index.html" class="logo"><i class="fas fa-car"></i><span>RwandaGo</span></a>
+                <div class="mobile-menu"><i class="fas fa-bars"></i></div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="pages/vehicles.html">Vehicles</a>
+                    <a href="pages/features.html">Features</a>
+                    <a href="pages/contact.html">Contact</a>
+                    <a href="login.html" class="btn-login" id="loginBtn">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="auth-container">
+        <div class="auth-header">
+            <i class="fas fa-car"></i>
+            <h1>Create Account</h1>
+            <p>Join RwandaGo and start your adventure</p>
+        </div>
+        <div class="auth-body">
+            <div id="alert" class="alert"></div>
+            <form id="signupForm">
+                <div class="form-row">
+                    <div class="form-group"><label><i class="fas fa-user"></i> First Name</label><input type="text" id="firstName" required></div>
+                    <div class="form-group"><label><i class="fas fa-user"></i> Last Name</label><input type="text" id="lastName" required></div>
+                </div>
+                <div class="form-group"><label><i class="fas fa-envelope"></i> Email Address</label><input type="email" id="email" required></div>
+                <div class="form-group"><label><i class="fas fa-phone"></i> Phone Number</label><input type="tel" id="phone" placeholder="+250..." required></div>
+                <div class="form-group"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="password" required></div>
+                <div class="form-group"><label><i class="fas fa-check-circle"></i> Confirm Password</label><input type="password" id="confirmPassword" required></div>
+                <div class="form-group"><label><i class="fas fa-user-tag"></i> Account Type</label>
+                    <select id="userRole">
+                        <option value="tourist">Tourist</option>
+                        <option value="admin">Rental Admin</option>
+                        <option value="support">Support Agent</option>
+                        <option value="driver">Driver/Guide</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary w-100" id="signupBtn"><i class="fas fa-user-plus"></i> Create Account</button>
+            </form>
+            <div class="text-center mt-3">Already have an account? <a href="login.html">Sign In</a></div>
+        </div>
+    </div>
+
+    <script src="assets/js/core/config.js"></script>
+    <script src="assets/js/core/session.js"></script>
+    <script>
+        const form = document.getElementById('signupForm');
+        const signupBtn = document.getElementById('signupBtn');
+        const alertDiv = document.getElementById('alert');
+
+        function showAlert(message, type) {
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            alertDiv.style.display = 'block';
+            setTimeout(() => { alertDiv.style.display = 'none'; }, 5000);
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                signupBtn.disabled = true;
+                signupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+            } else {
+                signupBtn.disabled = false;
+                signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+            }
+        }
+
+        // Demo user database for signup
+        const DEMO_USERS = {
+            'tourist@rwandago.com': { password: 'password123', role: 'tourist', name: 'John Doe', firstName: 'John', lastName: 'Doe', phone: '+250788123456' },
+            'admin@rwandago.com': { password: 'password123', role: 'admin', name: 'Admin User', firstName: 'Admin', lastName: 'User', phone: '+250788123457' },
+            'support@rwandago.com': { password: 'password123', role: 'support', name: 'Support Agent', firstName: 'Support', lastName: 'Agent', phone: '+250788123458' },
+            'driver@rwandago.com': { password: 'password123', role: 'driver', name: 'Driver Guide', firstName: 'Driver', lastName: 'Guide', phone: '+250788123459' }
+        };
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            const role = document.getElementById('userRole').value;
+            
+            // Validation
+            if (!firstName || !lastName || !email || !phone || !password) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Check if email already exists in demo users
+            if (DEMO_USERS[email]) {
+                showAlert('An account with this email already exists. Please login instead.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                return;
+            }
+            
+            if (password !== confirm) {
+                showAlert('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            setLoading(true);
+            
+            // Simulate API call for signup
+            setTimeout(() => {
+                // Create new user
+                const newUser = {
+                    id: Date.now(),
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    name: `${firstName} ${lastName}`,
+                    phone: phone,
+                    role: role,
+                    passport: '',
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Add to demo users (in production, this would be saved to database)
+                DEMO_USERS[email] = {
+                    password: password,
+                    role: role,
+                    name: newUser.name,
+                    firstName: firstName,
+                    lastName: lastName,
+                    phone: phone
+                };
+                
+                // AUTO-LOGIN: Save session immediately
+                sessionStorage.setItem('rwandago_user', JSON.stringify(newUser));
+                sessionStorage.setItem('rwandago_token', 'demo_token_' + Date.now());
+                sessionStorage.setItem('rwandago_role', role);
+                
+                showAlert('Account created successfully! Redirecting to dashboard...', 'success');
+                
+                // Redirect based on role
+                const roleRedirects = {
+                    'tourist': 'dashboard/tourist/index.html',
+                    'admin': 'dashboard/admin/index.html',
+                    'support': 'dashboard/support/index.html',
+                    'driver': 'dashboard/driver/index.html'
+                };
+                
+                setTimeout(() => {
+                    window.location.href = roleRedirects[role];
+                }, 1500);
+                
+                setLoading(false);
+            }, 1500);
+        });
+        
+        // Check if already logged in
+        if (sessionStorage.getItem('rwandago_user') || localStorage.getItem('rwandago_user')) {
+            const user = JSON.parse(sessionStorage.getItem('rwandago_user') || localStorage.getItem('rwandago_user'));
+            const roleRedirects = {
+                'tourist': 'dashboard/tourist/index.html',
+                'admin': 'dashboard/admin/index.html',
+                'support': 'dashboard/support/index.html',
+                'driver': 'dashboard/driver/index.html'
+            };
+            window.location.href = roleRedirects[user.role];
+        }
+    </script>
+</body>
+</html>

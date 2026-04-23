@@ -1,0 +1,32 @@
+/* ========================================
+   RWANDAGO - RESPONSIVE STYLES
+   Mobile and tablet breakpoints
+   ======================================== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+    .container { padding: 0 30px; }
+    .stats-grid { gap: 1rem; }
+    .vehicles-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Mobile (481px - 768px) */
+@media (max-width: 768px) {
+    .container { padding: 0 20px; }
+    .hero h1 { font-size: 2rem; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .vehicles-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .section-header h2 { font-size: 1.8rem; }
+    .hero-buttons { flex-direction: column; }
+    .btn { width: 100%; justify-content: center; }
+}
+
+/* Small Mobile (up to 480px) */
+@media (max-width: 480px) {
+    .container { padding: 0 15px; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .stat-item h3 { font-size: 1.8rem; }
+    .auth-body { padding: 1.5rem; }
+    .form-row { grid-template-columns: 1fr; gap: 0; }
+}

@@ -1,20 +1,11 @@
-// ========================================
-// PAYMENT ROUTES
-// ========================================
-
 const express = require('express');
-const router = express.Router();
-const {
-    initiatePayment,
-    verifyPayment,
-    getPaymentHistory,
-    getAllPayments
-} = require('../controllers/paymentController');
-const { protect, authorize } = require('../middleware/authMiddleware');
+const paymentController = require('../controllers/paymentController');
+const { authenticateToken } = require('../middleware/auth');
 
-router.post('/initiate', protect, initiatePayment);
-router.get('/verify/:paymentId', protect, verifyPayment);
-router.get('/history', protect, getPaymentHistory);
-router.get('/', protect, authorize('admin'), getAllPayments);
+const router = express.Router();
+
+router.post('/process', authenticateToken, paymentController.processPayment);
+router.get('/history', authenticateToken, paymentController.getPaymentHistory);
+router.get('/:id', authenticateToken, paymentController.getPaymentDetails);
 
 module.exports = router;

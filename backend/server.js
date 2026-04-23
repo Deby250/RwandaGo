@@ -1,124 +1,119 @@
-// ========================================
-// RWANDAGO BACKEND - MAIN SERVER (MySQL)
-// ========================================
-
-require('express-async-errors');
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
-const compression = require('compression');
-const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+const path = require('path');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
 
-// Import routes
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const vehicleRoutes = require('./routes/vehicleRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
-const paymentRoutes = require('./routes/paymentRoutes');
-const tourRoutes = require('./routes/tourRoutes');
-const supportRoutes = require('./routes/supportRoutes');
+dotenv.config();
 
-// Import middleware
-const { errorHandler } = require('./middleware/errorMiddleware');
-const { connectDB } = require('./config/database');
-
-// Initialize Express
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+    cors: {
+        origin: ['http://localhost:3000', 'http://127.0.0.1:5500', 'http://localhost:5500', 'null', 'file://'],
+        credentials: true
+    }
+});
 
-// ========================================
-// DATABASE CONNECTION
-// ========================================
-connectDB();
-
-// ========================================
-// MIDDLEWARE
-// ========================================
-app.use(cors());
+// Middleware
 app.use(helmet());
-app.use(compression());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, '..')));
-// server.js - Update CORS configuration
 app.use(cors({
     origin: ['http://localhost:3000', 'http://127.0.0.1:5500', 'http://localhost:5500', 'null', 'file://'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-}));LP
-// Rate limiting
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    message: 'Too many requests, please try again later.'
-});
-app.use('/api/', limiter);
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ========================================
-// API ROUTES
-// ========================================
+// Routes - Create these files if they don't exist
+let authRoutes, userRoutes, vehicleRoutes, bookingRoutes, tourRoutes, ticketRoutes, chatRoutes, emergencyRoutes, paymentRoutes, reportRoutes;
 
-app.get('/health', (req, res) => {
-    res.json({
-        status: 'OK',
-        message: 'RwandaGo API is running',
-        timestamp: new Date().toISOString(),
-        database: 'MySQL'
-    });
-});
-
-app.get('/api', (req, res) => {
-    res.json({
-        version: '1.0.0',
-        name: 'RwandaGo API',
-        description: 'Car Rental & Touring System API',
-        endpoints: {
-            auth: '/api/auth',
-            users: '/api/users',
-            vehicles: '/api/vehicles',
-            bookings: '/api/bookings',
-            payments: '/api/payments',
-            tours: '/api/tours',
-            support: '/api/support'
-        }
-    });
-});
+try {
+    authRoutes = require('./routes/auth');
+    userRoutes = require('./routes/users');
+    vehicleRoutes = require('./routes/vehicles');
+    bookingRoutes = require('./routes/bookings');
+    tourRoutes = require('./routes/tours');
+    ticketRoutes = require('./routes/tickets');
+    chatRoutes = require('./routes/chat');
+    emergencyRoutes = require('./routes/emergencies');
+    paymentRoutes = require('./routes/payments');
+    reportRoutes = require('./routes/reports');
+} catch (err) {
+    console.log('Some route files not found yet, using fallback routes');
+    
+    // Fallback routes
+    const fallbackRouter = express.Router();
+    fallbackRouter.get('/', (req, res) => res.json({ message: 'API endpoint - to be implemented' }));
+    
+    authRoutes = fallbackRouter;
+    userRoutes = fallbackRouter;
+    vehicleRoutes = fallbackRouter;
+    bookingRoutes = fallbackRouter;
+    tourRoutes = fallbackRouter;
+    ticketRoutes = fallbackRouter;
+    chatRoutes = fallbackRouter;
+    emergencyRoutes = fallbackRouter;
+    paymentRoutes = fallbackRouter;
+    reportRoutes = fallbackRouter;
+}
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/bookings', bookingRoutes);
-app.use('/api/payments', paymentRoutes);
 app.use('/api/tours', tourRoutes);
-app.use('/api/support', supportRoutes);
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/emergencies', emergencyRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/reports', reportRoutes);
 
-// Serve index.html for all non-API routes (SPA support)
-app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-        res.sendFile(path.join(__dirname, '..', 'index.html'));
-    }
+// Default route
+app.get('/', (req, res) => {
+    res.json({ message: 'RwandaGo API is running', version: '1.0.0' });
 });
 
-// 404 Handler
-app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        message: `Route not found: ${req.originalUrl}`
+// Test route
+app.get('/api/test', (req, res) => {
+    res.json({ success: true, message: 'API is working!' });
+});
+
+// Socket.IO for real-time chat
+io.on('connection', (socket) => {
+    console.log('New client connected:', socket.id);
+    
+    socket.on('join_room', (roomId) => {
+        socket.join(roomId);
+        console.log(`Socket ${socket.id} joined room ${roomId}`);
+    });
+    
+    socket.on('send_message', (data) => {
+        io.to(data.roomId).emit('receive_message', data);
+    });
+    
+    socket.on('disconnect', () => {
+        console.log('Client disconnected:', socket.id);
     });
 });
 
-// Error handler
-app.use(errorHandler);
-
-// ========================================
-// START SERVER
-// ========================================
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`🔗 API URL: http://localhost:${PORT}/api`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Error:', err.stack);
+    res.status(500).json({ error: err.message || 'Internal server error' });
 });
+
+const PORT = process.env.PORT || 5000;
+httpServer.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📡 API available at http://localhost:${PORT}/api`);
+    console.log(`🧪 Test endpoint: http://localhost:${PORT}/api/test`);
+});
+
+module.exports = { app, io };
